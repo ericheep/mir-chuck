@@ -2,7 +2,7 @@
 // Eric Heep
 
 public class matrix {
-// basic matrix operations and maniuplations
+// Basic matrix operations and maniuplations
 
     fun int[] arg_max(float x[], int num) {
         /* Returns the index of the max value in a 1D array
@@ -118,7 +118,7 @@ public class matrix {
         /* Returns the log of a 1D array
         */
         for (int i; i < x.cap(); i++) {
-            Math.log(x[i] + 1.0) => x[i];
+            Math.log(x[i] + 1) => x[i];
         }
         return x;
     }

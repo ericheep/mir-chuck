@@ -2,7 +2,7 @@
 // Eric Heep
 
 public class mel {
-    // class for calculating the mel weights given parameters of an stft matrix
+    // class for calculating the mel weights given parameters of an fft
     
     fun float[][] calc(int nfft, int nfilts, float sr, float width) {
         /* Creates a 2D array of nfilts by nfft windows
