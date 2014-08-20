@@ -64,10 +64,14 @@ public class mel {
     }
     
     fun float hz2mel(float frq) {
+        /* converts hz to mel scale
+        */
         return Math.log10(1 + frq/700) * 2595;
     }
 
     fun float mel2hz(float mel) {
+        /* converts mel scale to hz
+        */
         return 700 * (Math.pow(10, mel/2595) - 1);
     }
 }

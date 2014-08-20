@@ -2,7 +2,7 @@
 // Eric Heep
 
 public class matrix {
-// Matrix operations
+// basic matrix operations and maniuplations
 
     fun int[] arg_max(float x[], int num) {
         /* Returns the index of the max value in a 1D array
@@ -23,7 +23,7 @@ public class matrix {
         return out;
     }
 
-    fun float[][] cut (float x[][], int low, int high) {
+    fun float[][] cut(float x[][], int low, int high) {
         /* Reduces the number of rows in a 2D array 
         */
         high - low => int rows;
@@ -41,7 +41,7 @@ public class matrix {
         return out;
     }
 
-    fun float[] cut_win (float x[], int low, int high) {
+    fun float[] cut_win(float x[], int low, int high) {
         /* Reduces the number of rows in a 1D array
         */
         high - low => int num;
@@ -97,7 +97,7 @@ public class matrix {
         else <<< "Number of x columns must match number of y rows", "" >>>;
     }
 
-    fun float[][] log (float x[][]) {
+    fun float[][] log(float x[][]) {
         /* Returns the log of a 2d array
         */
         float out[x.cap()][x[0].cap()];
