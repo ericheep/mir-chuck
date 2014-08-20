@@ -2,7 +2,7 @@
 // Eric Heep
 
 public class matrix {
-// basic matrix operations and maniuplations
+// basic matrix operations and manipulations
 
     fun int[] arg_max(float x[], int num) {
         /* Returns the index of the max value in a 1D array
