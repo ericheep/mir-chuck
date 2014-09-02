@@ -2,7 +2,7 @@
 // Eric Heep
 
 public class mel {
-    // class for calculating the mel weights given parameters of an fft
+    // class for calculating mel weights given parameters of an fft
     
     fun float[][] calc(int nfft, int nfilts, float sr, float width) {
         /* Creates a 2D array of nfilts by nfft windows
@@ -50,6 +50,8 @@ public class mel {
     }
 
     fun float max(float x, float y) {
+        /* Finds the max of two floats
+        */
         float max;
         if (x > y) x => max;
         else y => max;
@@ -57,6 +59,8 @@ public class mel {
     }
 
     fun float min(float x, float y) {
+        /* Finds the min of two floats
+        */
         float min;
         if (x < y) x => min;
         else y => min;
@@ -64,13 +68,13 @@ public class mel {
     }
     
     fun float hz2mel(float frq) {
-        /* converts hz to mel scale
+        /* Converts hz to mel scale
         */
         return Math.log10(1 + frq/700) * 2595;
     }
 
     fun float mel2hz(float mel) {
-        /* converts mel scale to hz
+        /* Converts mel scale to hz
         */
         return 700 * (Math.pow(10, mel/2595) - 1);
     }

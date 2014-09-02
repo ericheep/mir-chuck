@@ -2,9 +2,9 @@
 // Eric Heep
 
 public class sci {
-    // A few scientific tools 
+    // scientific tools 
 
-    fun float[][] cms (float X[][]) {
+    fun float[][] cms(float X[][]) {
         /* Cepstral mean subtraction of a 2D array
         */
         float out[X.cap()][X[0].cap()];
@@ -22,7 +22,7 @@ public class sci {
 
     }
    
-    fun float[] cms_win (float x[]) {
+    fun float[] cms_win(float x[]) {
         /* Cepstral mean subtraction of a 1D array
         */
         float sum;
@@ -39,7 +39,7 @@ public class sci {
         return x;
     }
 
-    fun float cosine_dist (float x[], float y[]) {
+    fun float cosine_dist(float x[], float y[]) {
         /* Returns a cosine simlilarity score for two arrays
         */
         float sum_x, sum_y, num;
@@ -89,7 +89,7 @@ public class sci {
         return sum/y[0].cap();
     }
 
-    fun float[][] dct (float x[][]) {
+    fun float[][] dct(float x[][]) {
         /* Returns the direct cosine transform of a 2D array
         */
         float out[x.cap()][x[0].cap()];
@@ -106,7 +106,7 @@ public class sci {
         return out;
     }
 
-    fun float[] dct_win (float x[]){
+    fun float[] dct_win(float x[]){
         /* Returns the direct cosine transform of a 1D array
         */
         x.cap() => int N;

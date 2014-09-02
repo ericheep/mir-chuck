@@ -7,6 +7,8 @@ public class spectrograph {
     osc.dest("127.0.0.1", 12001);
 
     fun void spectrogram(float x[]) {
+        /* Real time spectrogram
+        */
         osc.start("/frame");
         for (int i; i < x.cap(); i++) {
             osc.add(Std.rmstodb(x[i]));
@@ -15,7 +17,7 @@ public class spectrograph {
     }
 
     fun void spectrogram(float x[][], dur win) {
-        /* spectrograph that accepts an stft
+        /* Spectrograph that accepts an stft
         */
         for (int i; i < x[0].cap(); i++) {
             win => now;
