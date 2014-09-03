@@ -32,12 +32,14 @@ while (true) {
     fft.upchuck() @=> blob;
 
     // mel matrix and subband filter
-    // sub.filts(blob.fvals(), filts, N, sr) @=> float X[];
-    sub.centroid(blob.fvals(), filts, N, sr) @=> float X[];
+    sub.filts(blob.fvals(), filts, N, sr) @=> float X[];
+    sub.centroid(blob.fvals(), filts, N, sr) @=> float subcentroid[];
     // mat.dot_win(blob.fvals(), mx) @=> float X[];
 
-    // TODO: improve mfcc (log and dct) results
+    // TODO: improve mfcc (log and dct) results, create a matrix.rms function
     //mat.log_win(X) @=> X;
     //sci.dct_win(X) @=> X;
-    vis.spectrogram(X);
+
+    vis.data(X, "/data");
+    vis.data(subcentroid, "/subcentroid");
 }

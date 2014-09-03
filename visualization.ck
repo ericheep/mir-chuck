@@ -6,26 +6,26 @@ public class visualization{
     OscOut osc;
     osc.dest("127.0.0.1", 12001);
 
-    fun void spectrogram(float x[]) {
-        /* Real time spectrogram
+    fun void data(float x[], string addr) {
+        /* General function for sending real time data to Processing
         */
-        osc.start("/frame");
+        osc.start(addr);
         for (int i; i < x.cap(); i++) {
-            osc.add(Std.rmstodb(x[i]));
+            osc.add(x[i]);
         }
         osc.send();
     }
 
-    fun void spectrogram(float x[][], dur win) {
-        /* Spectrograph that accepts an stft
+    fun void matrix(float x[][], string addr, dur win) {
+        /* General function for sending a matrix of data to Processing
         */
         for (int i; i < x[0].cap(); i++) {
-            win => now;
-            osc.start("/frame");
+            osc.start(addr);
             for (int j; j < x.cap(); j++) {
-                osc.add(Std.rmstodb(x[j][i]));
+                osc.add(x[j][i]);
             }
             osc.send();
+            win => now;
         }
         osc.send();
     }

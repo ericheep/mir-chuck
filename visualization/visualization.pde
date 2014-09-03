@@ -1,3 +1,7 @@
+// visualization.pde
+// Eric Heep
+// Processing sketch that displays moving data received from ChucK
+
 import oscP5.*;
 import netP5.*;
 OscP5 oscP5;
@@ -30,7 +34,7 @@ void setup() {
 }
 
 void oscEvent(OscMessage msg) {
-  if (msg.checkAddrPattern("/frame") == true) {
+  if (msg.checkAddrPattern("/data") == true) {
     for (int i = 0; i < rows; i++) {
       mov_spectra[0][i] = msg.get(i).floatValue();
     }
