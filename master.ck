@@ -13,11 +13,11 @@ Machine.add(mel);
 me.dir() + "/sci.ck" => string sci;
 Machine.add(sci);
 
-me.dir() + "/spectrograph.ck" => string spectrograph;
-Machine.add(spectrograph);
+me.dir() + "/visualization.ck" => string visualization;
+Machine.add(visualization);
 
-me.dir() + "/stft.ck" => string dsp;
-Machine.add(dsp);
+me.dir() + "/stft.ck" => string stft;
+Machine.add(stft);
 
 me.dir() + "/subband.ck" => string subband;
 Machine.add(subband);
