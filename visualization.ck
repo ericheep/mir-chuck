@@ -1,8 +1,8 @@
-// spectrograph.ck
+// visualization.ck
 // Eric Heep
 
-public class spectrograph {
-    // sends a moving spectrogram to Processing
+public class visualization{
+    // sends data to Processing for visualizations
     OscOut osc;
     osc.dest("127.0.0.1", 12001);
 

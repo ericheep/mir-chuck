@@ -6,7 +6,7 @@ sci sci;
 mel mel;
 matrix mat;
 subband sub;
-spectrograph spc;
+visualization vis;
 
 adc => FFT fft => blackhole;
 
@@ -39,5 +39,5 @@ while (true) {
     // TODO: improve mfcc (log and dct) results
     //mat.log_win(X) @=> X;
     //sci.dct_win(X) @=> X;
-    spc.spectrogram(X);
+    vis.spectrogram(X);
 }
