@@ -1,9 +1,6 @@
 // master.ck
 // Eric heep
 
-//me.dir() + "bark.ck" => string bark;
-//Machine.add(bark);
-
 me.dir() + "/matrix.ck" => string matrix;
 Machine.add(matrix);
 
@@ -19,8 +16,8 @@ Machine.add(visualization);
 me.dir() + "/stft.ck" => string stft;
 Machine.add(stft);
 
-me.dir() + "/subband.ck" => string subband;
-Machine.add(subband);
+me.dir() + "/filter_bank.ck" => string filter_bank;
+Machine.add(filter_bank);
 
 me.dir() + "/example.ck" => string example;
 Machine.add(example);

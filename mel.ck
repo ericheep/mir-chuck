@@ -5,7 +5,12 @@ public class mel {
     // class for calculating mel weights given parameters of an fft
     
     fun float[][] calc(int nfft, int nfilts, float sr, float width) {
+        return calc(nfft, nfilts, sr, width, "mel");
+    }
+
+    fun float[][] calc(int nfft, int nfilts, float sr, float width, string mode) {
         /* Creates a 2D array of nfilts by nfft windows
+        mode : type of bands, "bark" or "mel" 
         nfft : fft size
         nfilts : number of mel filters
         sr : sample rate
@@ -16,17 +21,26 @@ public class mel {
         float binfrqs[nfilts + 2];
         float wts[nfilts][nfft];
 
-        hz2mel(40) => float minmel;
-        hz2mel(22050) => float maxmel;
-
         for (int i; i < fftfrqs.cap(); i++) {
             (i * sr)/nfft => fftfrqs[i];
         }
 
-        for (int i; i < binfrqs.cap(); i++) {
-            mel2hz(minmel + i/(binfrqs.cap() - 1.0) * (maxmel - minmel)) => binfrqs[i];
+        if (mode == "mel") {
+            hz2mel(40.0) => float minmel;
+            hz2mel(sr/2.0) => float maxmel;
+            for (int i; i < binfrqs.cap(); i++) {
+                mel2hz(minmel + i/(binfrqs.cap() - 1.0) * (maxmel - minmel)) => binfrqs[i];
+            }
         }
 
+        if (mode == "bark") {
+            hz2bark(40.0) => float minbark;
+            hz2bark(sr/2.0) => float maxbark;
+            for (int i; i < binfrqs.cap(); i++) {
+                bark2hz(minbark+ i/(binfrqs.cap() - 1.0) * (maxbark - minbark)) => binfrqs[i];
+            }
+        }
+        
         for (int i; i < nfilts; i++) {
             float fs[3];
             for (int j; j < 3; j++) {
@@ -77,5 +91,17 @@ public class mel {
         /* Converts mel scale to hz
         */
         return 700 * (Math.pow(10, mel/2595) - 1);
+    }
+
+    fun float hz2bark(float frq) {
+        /* Converts hz to bark scale
+        */
+        return (26.81 * frq)/(1960 + frq) - 0.51;
+    }
+
+    fun float bark2hz(float bark) {
+        /* Converts bark scale to hz
+        */
+        return (-19600 * bark - 9996)/(10 * bark - 263); 
     }
 }

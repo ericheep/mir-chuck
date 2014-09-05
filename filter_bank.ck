@@ -1,10 +1,10 @@
 // subband.ck
 // Eric Heep    
 
-public class subband{
+public class filter_bank{
     // subband analysis
 
-    fun float[] filts(float X[], float filts[], int N, float sr) {
+    fun float[] subband(float X[], float filts[], int N, float sr) {
         /* Subband analysis of an stft window
         */
 
@@ -23,7 +23,7 @@ public class subband{
         return subfilts;
     }
 
-    fun float[] centroid(float X[], float filts[], int N, float sr) {
+    fun float[] sub_centroid(float X[], float filts[], int N, float sr) {
         /* Subband centroid of an stft window
         */ 
         

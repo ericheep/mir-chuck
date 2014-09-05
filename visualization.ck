@@ -9,9 +9,9 @@ public class visualization{
     fun void data(float x[], string addr) {
         /* General function for sending real time data to Processing
         */
-        osc.start(addr);
+        osc.start("/data");
         for (int i; i < x.cap(); i++) {
-            osc.add(x[i]);
+            osc.add(Std.rmstodb(x[i]));
         }
         osc.send();
     }
