@@ -3,7 +3,7 @@
 
 public class mel {
     // class for calculating mel weights given parameters of an fft
-    
+    // includes an optional parameter for 24 bark bands
     fun float[][] calc(int nfft, int nfilts, float sr, float width) {
         return calc(nfft, nfilts, sr, width, "mel");
     }
@@ -16,6 +16,10 @@ public class mel {
         sr : sample rate
         width : triangular window spacing, 1.0 for 50% overlapping
         */
+
+        if (mode == "bark") {
+            24 => nfilts;
+        }
 
         float fftfrqs[Math.floor(nfft/2) $ int + 1];
         float binfrqs[nfilts + 2];
@@ -34,8 +38,8 @@ public class mel {
         }
 
         if (mode == "bark") {
-            hz2bark(40.0) => float minbark;
-            hz2bark(sr/2.0) => float maxbark;
+            hz2bark(50.0) => float minbark;
+            hz2bark(13500) => float maxbark;
             for (int i; i < binfrqs.cap(); i++) {
                 bark2hz(minbark+ i/(binfrqs.cap() - 1.0) * (maxbark - minbark)) => binfrqs[i];
             }
