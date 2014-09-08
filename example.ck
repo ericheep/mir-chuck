@@ -5,7 +5,7 @@
 sci sci;
 mel mel;
 matrix mat;
-filter_bank sub;
+filter_bank bnk;
 visualization vis;
 
 adc => FFT fft => blackhole;
@@ -32,8 +32,8 @@ while (true) {
     fft.upchuck() @=> blob;
 
     // mel matrix and subband filter
-    //sub.subband(blob.fvals(), filts, N, sr) @=> float X[];
-    //sub.sub_centroid(blob.fvals(), filts, N, sr) @=> float subcentroid[];
+    //bnk.bank(blob.fvals(), filts, N, sr) @=> float X[];
+    //bnk.sub_cent(blob.fvals(), filts, N, sr) @=> float sc[];
     mat.dot_win(blob.fvals(), mx) @=> float X[];
 
     // TODO: improve mfcc (log and dct) results, create a matrix.rms function

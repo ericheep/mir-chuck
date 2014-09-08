@@ -4,26 +4,26 @@
 public class filter_bank{
     // subband analysis
 
-    fun float[] subband(float X[], float filts[], int N, float sr) {
+    fun float[] bank(float X[], float filts[], int N, float sr) {
         /* Subband analysis of an stft window
         */
 
-        float subfilts[filts.cap() - 1];
+        float subbands[filts.cap() - 1];
         N/2 + 1 => int bins;
 
         for (int i; i < bins; i++) {
             sr/N * i => float frq; 
             for (int j; j < filts.cap() - 1; j++) {
                 if (filts[j] < frq && filts[j + 1] > frq) {
-                    X[i] +=> subfilts[j];        
+                    X[i] +=> subbands[j];        
                 }
             }
         }
 
-        return subfilts;
+        return subbands;
     }
 
-    fun float[] sub_centroid(float X[], float filts[], int N, float sr) {
+    fun float[] sub_cent(float X[], float filts[], int N, float sr) {
         /* Subband centroid of an stft window
         */ 
         
