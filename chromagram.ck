@@ -9,18 +9,15 @@ public class chromagram {
         float f[N/2 + 1]; 
         float out[f.cap()];
 
-        for (int i; i < f.cap(); i++) {
-            i/N * sr => f[i];
-            <<< f[i] >>>;
-        }
+        // needs a modulo to wrap into an octave
+        sr/N * i => float frq;  
 
-        for (int i; i < out.cap(); i++) {
-            // needs a modulo to wrap into an octave
-            sr/N * i => float frq; 
-            for (int j; j < out.cap() - 1; j++) {
-                if (f[j] < frq && f[j + 1] > frq) {
-                    X[i] +=> out[j];        
-                }
+        for (int i; i < X.cap(); i++) {
+            Std.ftom(sr/N * i) $ int => int low;
+            Std.ftom(sr/N * (i + 1)) $ int => int high;
+
+            if (frq > Std.mtof(low) && frq < Std.mtof(high)) { 
+                X[i] +=> out[Std.ftom(frq) $ int];
             }
         }
 

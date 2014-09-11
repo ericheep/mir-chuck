@@ -5,6 +5,7 @@
 sci sci;
 mel mel;
 matrix mat;
+chromagram chr;
 filter_bank bnk;
 visualization vis;
 
