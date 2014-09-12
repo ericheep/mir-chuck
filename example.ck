@@ -13,7 +13,7 @@ adc => FFT fft => blackhole;
 
 second / samp => float sr;
 32 => int nfilts;
-512 => int N => int win => fft.size;
+8182 => int N => int win => fft.size;
 Windowing.hamming(N) => fft.window;
 
 UAnaBlob blob;
@@ -35,7 +35,8 @@ while (true) {
     // mel matrix and subband filter
     //bnk.bank(blob.fvals(), filts, N, sr) @=> float X[];
     //bnk.sub_cent(blob.fvals(), filts, N, sr) @=> float sc[];
-    mat.dot_win(blob.fvals(), mx) @=> float X[];
+    //mat.dot_win(blob.fvals(), mx) @=> float X[];
+    chr.chromagram(blob.fvals(), N, sr) @=> float X[];
 
     // TODO: improve mfcc (log and dct) results, create a matrix.rms function
     //mat.log_win(X) @=> X;

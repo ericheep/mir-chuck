@@ -7,7 +7,7 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-int filts = 24;
+int filts = 12;
 int cols, rows;
 int fr = 6;
 
@@ -45,7 +45,7 @@ void oscEvent(OscMessage msg) {
 void mov_specgram() {
   for (int i = 0; i < cols; i++) {
     for (int j = 0; j < rows; j++) {
-      fill(((mov_spectra[i][j] * 2.5) + 200) % 360, 300, 300);
+      fill(((mov_spectra[i][j] * 1000000) + 200) % 360, 300, 300);
       rect((cols - i) * fr - fr, height - (j * hght), fr, hght * -1);
     }
   }
