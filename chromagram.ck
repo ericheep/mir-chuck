@@ -4,20 +4,15 @@
 public class chromagram {
     // class for sorting fft bins into a chromagram
 
-    fun float[] chr(float X[], int N, int sr) {
+    fun float[] chromagram(float X[], int N, float sr) {
+        /* Chromagram, wraps notes into an octave 
+        */
+        float out[12];
 
-        float f[N/2 + 1]; 
-        float out[f.cap()];
-
-        // needs a modulo to wrap into an octave
-        sr/N * i => float frq;  
-
-        for (int i; i < X.cap(); i++) {
-            Std.ftom(sr/N * i) $ int => int low;
-            Std.ftom(sr/N * (i + 1)) $ int => int high;
-
-            if (frq > Std.mtof(low) && frq < Std.mtof(high)) { 
-                X[i] +=> out[Std.ftom(frq) $ int];
+        for (30 => int i; i < X.cap(); i++) {
+            Math.round(Std.ftom(sr/N * i)) % 12 => float note;  
+            if (note > 0 && note < 12) {
+                X[i] => out[note $ int];
             }
         }
 
