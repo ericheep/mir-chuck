@@ -1,4 +1,4 @@
-// mel_filter.ck
+// Mel.ck
 // Eric Heep
 
 public class Mel {
