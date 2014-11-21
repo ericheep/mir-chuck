@@ -1,7 +1,7 @@
-// stft.ck
+// Stft.ck
 // Eric Heep
 
-public class stft {
+public class Stft {
     // short time fourier transform using built in FFT
 
     fun float[][] stft(SndBuf clip, int N) { 

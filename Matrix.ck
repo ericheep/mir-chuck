@@ -1,7 +1,7 @@
-// matrix.ck
+// Matrix.ck
 // Eric Heep
 
-public class matrix {
+public class Matrix {
     // matrix operations
 
     fun int[] arg_max(float x[], int num) {

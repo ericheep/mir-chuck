@@ -1,7 +1,7 @@
-// subband.ck
+// Subband.ck
 // Eric Heep    
 
-public class filter_bank{
+public class Subband {
     // subband analysis
 
     fun float[] bank(float X[], float filts[], int N, float sr) {

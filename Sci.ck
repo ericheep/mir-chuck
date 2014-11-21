@@ -1,7 +1,7 @@
-// sci.ck
+// Sci.ck
 // Eric Heep
 
-public class sci {
+public class Sci {
     // scientific tools 
 
     fun float[][] cms(float X[][]) {
