@@ -7,9 +7,9 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-int filts = 12;
+int filts = 88;
 int cols, rows;
-int fr = 6;
+int fr = 3;
 
 float hght;
 float[][] mov_spectra;
@@ -17,6 +17,29 @@ float[][] plot;
 
 boolean sketchFullScreen() {
   return true;
+}
+
+void oscEvent(OscMessage msg) {
+  if (msg.checkAddrPattern("/data") == true) {
+    for (int i = 0; i < rows; i++) {
+      mov_spectra[0][i] = msg.get(i).floatValue();
+    }
+    redraw();
+  }
+}
+
+void mov_specgram() {
+  for (int i = 0; i < cols; i++) {
+    for (int j = 0; j < rows; j++) {
+      fill(mov_spectra[i][j] * 3.5, 300, 300);
+      rect((cols - i) * fr - fr, height - (j * hght), fr, hght * -1);
+    }
+  }
+  for (int i = 0; i < cols - 1; i++) {
+    for (int j = 0; j < rows; j++) {
+      mov_spectra[cols - (i + 1)][j] = mov_spectra[cols - (i + 2)][j];
+    }
+  }
 }
 
 void setup() {
@@ -33,28 +56,6 @@ void setup() {
   noCursor();
 }
 
-void oscEvent(OscMessage msg) {
-  if (msg.checkAddrPattern("/data") == true) {
-    for (int i = 0; i < rows; i++) {
-      mov_spectra[0][i] = msg.get(i).floatValue();
-    }
-    redraw();
-  }
-}
-
-void mov_specgram() {
-  for (int i = 0; i < cols; i++) {
-    for (int j = 0; j < rows; j++) {
-      fill(((mov_spectra[i][j] * 1000000) + 200) % 360, 300, 300);
-      rect((cols - i) * fr - fr, height - (j * hght), fr, hght * -1);
-    }
-  }
-  for (int i = 0; i < cols - 1; i++) {
-    for (int j = 0; j < rows; j++) {
-      mov_spectra[cols - (i + 1)][j] = mov_spectra[cols - (i + 2)][j];
-    }
-  }
-}
 
 void draw() {
   mov_specgram();

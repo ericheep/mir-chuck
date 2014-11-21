@@ -7,7 +7,7 @@ Machine.add(chromagram);
 me.dir() + "/matrix.ck" => string matrix;
 Machine.add(matrix);
 
-me.dir() + "/mel.ck" => string mel;
+me.dir() + "/mel_filter.ck" => string mel;
 Machine.add(mel);
 
 me.dir() + "/sci.ck" => string sci;
