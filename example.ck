@@ -5,7 +5,7 @@
 sci sci;
 Mel mel;
 matrix mat;
-chromagram chr;
+Chromagram chr;
 filter_bank bnk;
 visualization vis;
 
@@ -39,16 +39,6 @@ while (true) {
     // TODO: improve mfcc (log and dct) results, create a matrix.rms function
     //mat.log_win(X) @=> X;
     //sci.dct_win(X) @=> X;
-    wrap(X) @=> X;
+    chr.wrap(X) @=> X;
     vis.data(X, "/data");
-}
-
-fun float[] wrap(float X[]) {
-    float octave[12];
-    for (int i; i < X.cap()/3; i++) {
-        for (int j; j < 3; j++) {
-            X[(i * 3) + j] + octave[i % 12] => octave[i % 12];
-        }
-    }
-    return octave;
 }
