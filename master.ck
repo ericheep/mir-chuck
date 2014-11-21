@@ -19,7 +19,7 @@ Machine.add(visualization);
 me.dir() + "/Stft.ck" => string stft;
 Machine.add(stft);
 
-me.dir() + "/Filter_bank.ck" => string filter_bank;
+me.dir() + "/Subband.ck" => string filter_bank;
 Machine.add(filter_bank);
 
 me.dir() + "/example.ck" => string example;
