@@ -21,7 +21,10 @@ public class Mel {
 
         // mel scale transformation
         if (filter == "mel") {
-            32 => n_filts;
+            if (n_filts == 0) {
+                // default number of mel bands
+                32 => n_filts;
+            }
             n_filts + 2 => bin_frqs.size;
             hz2mel(40.0) => float minmel;
             hz2mel(sr/2.0) => float maxmel;
@@ -32,8 +35,10 @@ public class Mel {
 
         // critical band bark transformation
         if (filter == "bark") {
-            // 24 critical bands betweeen 50hz and 13.5khz
-            24 => n_filts;
+            if (n_filts == 0) {
+                // 24 critical bands betweeen 50hz and 13.5khz
+                24 => n_filts;
+            }
             n_filts + 2 => bin_frqs.size;
             hz2bark(50.0) => float minbark;
             hz2bark(13500) => float maxbark;
@@ -44,8 +49,10 @@ public class Mel {
 
         // constant Q transformation
         if (filter == "constantQ") {
-            // 88 piano keys between 27.5 hz (low A) to 4186.01hz (high C)
-            88 * 3 => n_filts;
+            if (n_filts == 0) {
+                // 88 piano keys between 27.5 hz (low A) to 4186.01hz (high C)
+                88 * 3 => n_filts;
+            }
             n_filts + 2 => bin_frqs.size;
             hz2pitch(27.5) => float minpitch;
             hz2pitch(4186.01) => float maxpitch;
