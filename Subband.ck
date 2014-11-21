@@ -1,12 +1,10 @@
 // Subband.ck
-// Eric Heep    
+// Eric Heep
 
 public class Subband {
-    // subband analysis
 
+    // subband analysis
     fun float[] bank(float X[], float filts[], int N, float sr) {
-        /* Subband analysis of an stft window
-        */
 
         float subbands[filts.cap() - 1];
         N/2 + 1 => int bins;
@@ -23,9 +21,8 @@ public class Subband {
         return subbands;
     }
 
+    // subband centroids
     fun float[] sub_cent(float X[], float filts[], int N, float sr) {
-        /* Subband centroid of an stft window
-        */ 
         
         float prod[filts.cap() - 1];
         float sum[filts.cap() - 1];

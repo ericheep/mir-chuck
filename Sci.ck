@@ -2,11 +2,9 @@
 // Eric Heep
 
 public class Sci {
-    // scientific tools 
 
+    // cepstral mean subtraction
     fun float[][] cms(float X[][]) {
-        /* Cepstral mean subtraction of a 2D array
-        */
         float out[X.cap()][X[0].cap()];
         float temp[X.cap()];
         for (int i; i < X[0].cap(); i++) {
@@ -21,10 +19,10 @@ public class Sci {
         return out;
 
     }
-   
+    
+    // cepstral mean subtraction
     fun float[] cms_win(float x[]) {
-        /* Cepstral mean subtraction of a 1D array
-        */
+
         float sum;
         for (int i; i < x.cap(); i++) {
             x[i] +=> sum; 
@@ -39,9 +37,8 @@ public class Sci {
         return x;
     }
 
+    // cosine similarity score
     fun float cosine_dist(float x[], float y[]) {
-        /* Returns a cosine simlilarity score for two arrays
-        */
         float sum_x, sum_y, num;
 
         for (int i; i < x.cap(); i++) {
@@ -72,9 +69,8 @@ public class Sci {
         }
     }
 
+    // cosine similarity score
     fun float mat_cosine_compare(float x[][], float y[][]) {
-        /* Returns a cosine similarity score for two matrices
-        */
         0 => float sum;
         float temp_x[x.cap()];
         float temp_y[y.cap()];
@@ -89,9 +85,8 @@ public class Sci {
         return sum/y[0].cap();
     }
 
+    // discrete cosine transform
     fun float[][] dct(float x[][]) {
-        /* Returns the direct cosine transform of a 2D array
-        */
         float out[x.cap()][x[0].cap()];
         float temp[x.cap()];
         for (int i; i < x[0].cap(); i++) {
@@ -106,9 +101,8 @@ public class Sci {
         return out;
     }
 
+    // discrete cosine transform
     fun float[] dct_win(float x[]){
-        /* Returns the direct cosine transform of a 1D array
-        */
         x.cap() => int N;
         float out[N];
         for (int k; k < N; k++) {

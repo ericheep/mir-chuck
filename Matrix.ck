@@ -4,9 +4,8 @@
 public class Matrix {
     // matrix operations
 
+    // max index
     fun int[] arg_max(float x[], int num) {
-        /* Returns the index of the max value in a 1D array
-        */
         int out[num];
         for (int i; i < num; i++) {
            float max;
@@ -23,9 +22,8 @@ public class Matrix {
         return out;
     }
 
+    // reduces rows of a 2D array
     fun float[][] cut(float x[][], int low, int high) {
-        /* Reduces the number of rows in a 2D array 
-        */
         high - low => int rows;
         float out[rows][x[0].cap()];
         float temp[x.cap()];
@@ -41,9 +39,8 @@ public class Matrix {
         return out;
     }
 
+    // reduces an array
     fun float[] cut_win(float x[], int low, int high) {
-        /* Reduces the number of rows in a 1D array
-        */
         high - low => int num;
         float out[num];
         for (int i; i < num; i++) {
@@ -52,9 +49,8 @@ public class Matrix {
         return out;
     }
 
+    // dot product
     fun float[][] dot(float x[][], float y[][]) {
-        /* Returns the dot product of two matrices
-        */
         x.cap() => int rows_x;
         x[0].cap() => int cols_x;
         y.cap() => int rows_y; 
@@ -74,9 +70,8 @@ public class Matrix {
         return out;
     }
 
+    // dot product
     fun float[] dot_win(float x[], float y[][]) {
-        /* Returns the dot product of an array and matrix
-        */
         1 => int rows_x; 
         x.cap() => int cols_x;
         y.cap() => int rows_y; 
@@ -97,9 +92,8 @@ public class Matrix {
         else <<< "Number of x columns must match number of y rows", "" >>>;
     }
 
+    // log transform
     fun float[][] log(float x[][]) {
-        /* Returns the log of a 2d array
-        */
         float out[x.cap()][x[0].cap()];
         float temp[x.cap()];
         for (int i; i < x[0].cap(); i++) {
@@ -114,18 +108,16 @@ public class Matrix {
         return out;
     }
 
+    // log transform
     fun float[] log_win (float x[]) {
-        /* Returns the log of a 1D array
-        */
         for (int i; i < x.cap(); i++) {
             Math.log(x[i] + 1) => x[i];
         }
         return x;
     }
-    
+   
+    // mean average of a matrix by rows or columns
     fun float[] mean(float x[][], int axis) {
-        /* Returns mean of a 2D array along a given axis
-        */
         int rows, cols;
         if (axis == 0) {
             x.cap() => rows;
@@ -151,9 +143,8 @@ public class Matrix {
         return out;
     }
 
+    // sorting function
     fun int[] order (int x[]) {
-        /* Reoders an array
-        */
         int out[x.cap()];
         int sum;
         while (sum != x.cap() - 1) {
@@ -172,10 +163,8 @@ public class Matrix {
         return x;
     }
 
+    // matrix tranpose
     fun float[][] transpose (float x[][]) {
-        /* Returns a transpose of a 2D array
-        */
-
         float out[x[0].cap()][x.cap()];
         for (int i; i < x.cap(); i++) {
             for (int j; j < x[0].cap(); j++) {

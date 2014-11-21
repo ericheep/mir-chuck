@@ -3,7 +3,7 @@
 
 public class Chromagram {
 
-    // wraps constant q into an octave
+    // wraps constant q array into an octave
     fun float[] wrap(float X[]) {
         float octave[12];
         for (int i; i < X.cap()/3; i++) {

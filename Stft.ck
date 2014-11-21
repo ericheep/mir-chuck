@@ -2,11 +2,9 @@
 // Eric Heep
 
 public class Stft {
-    // short time fourier transform using built in FFT
 
+    // short time fourier transform using built in FFT
     fun float[][] stft(SndBuf clip, int N) { 
-        /* converts an sndbuf into an stft
-        */
         clip => FFT fft => blackhole;
         Windowing.hamming(N) => fft.window;
         
