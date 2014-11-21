@@ -1,7 +1,7 @@
 // master.ck
 // Eric heep
 
-me.dir() + "/chromagram.ck" => string chromagram;
+me.dir() + "/Chromagram.ck" => string chromagram;
 Machine.add(chromagram);
 
 me.dir() + "/matrix.ck" => string matrix;
