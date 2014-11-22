@@ -6,6 +6,7 @@ Mel mel;
 Sci sci;
 Matrix mat;
 Subband bnk;
+Tonality ton;
 Chromagram chr;
 Visualization vis;
 
@@ -14,7 +15,7 @@ adc => FFT fft => blackhole;
 
 // fft parameters 
 second / samp => float sr;
-4096 => int N => int win => fft.size;
+1024 => int N => int win => fft.size;
 Windowing.hamming(N) => fft.window;
 
 UAnaBlob blob;
@@ -22,11 +23,15 @@ UAnaBlob blob;
 //[0.0, 100.0, 500.0, 1000.0, 10000.0, 22050.0] @=> float filts[];
 
 // calculates transformation matrix
-mel.calc(N, sr, "constantQ") @=> float mx[][];
+mel.calc(N, sr, "mel") @=> float mx[][];
 mat.transpose(mx) @=> mx;
 
 // cuts off unnecessary half of transformation weights
-mat.cut(mx, 0, win/2) @=> mx;
+mat.cutMat(mx, 0, win/2) @=> mx;
+
+// keystrength cross correlation
+ton.gomezProfs() @=> float key[][];
+mat.transpose(key) @=> key;
 
 // main program
 while (true) {
@@ -40,15 +45,25 @@ while (true) {
     //bnk.sub_cent(blob.fvals(), filts, N, sr) @=> float sc[];
 
     // matrix dot product with transformation matrix
-    mat.dot_win(blob.fvals(), mx) @=> float X[];
+    mat.dot(blob.fvals(), mx) @=> float X[];
 
     // chromatic octave wrapping
-    chr.wrap(X) @=> X;
+    // chr.wrap(X) @=> X;
 
-    // TODO: improve mfcc (log and dct) results, create a matrix.rms function
-    //mat.log_win(X) @=> X;
-    //sci.dct_win(X) @=> X;
+    // keystrength cross correlation
+    // mat.dot(X, key) @=> X;
 
+    // mfcc steps
+    mat.log10(X) @=> X;
+    mat.pow(X, 1.5) @=> X;
+    sci.dct(X) @=> X;
+
+    // discarding upper half of mfcc
+    mat.cut(X, 0, 12) @=> X;
+
+    // rms scaling
+    mat.rmstodb(X) @=> X;
+    
     // sends data to Processing
     vis.data(X, "/data");
 }

@@ -8,6 +8,7 @@ Machine.add(me.dir() + "/Mel.ck");
 Machine.add(me.dir() + "/Sci.ck");
 Machine.add(me.dir() + "/Stft.ck");
 Machine.add(me.dir() + "/Subband.ck");
+Machine.add(me.dir() + "/Tonality.ck");
 Machine.add(me.dir() + "/Visualization.ck");
 
 // main program

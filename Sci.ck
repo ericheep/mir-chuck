@@ -4,14 +4,14 @@
 public class Sci {
 
     // cepstral mean subtraction
-    fun float[][] cms(float X[][]) {
+    fun float[][] cmsMat(float X[][]) {
         float out[X.cap()][X[0].cap()];
         float temp[X.cap()];
         for (int i; i < X[0].cap(); i++) {
             for (int j; j < X.cap(); j++) {
                 X[j][i] => temp[j];
             }
-            cms_win(temp) @=> float c[];
+            cms(temp) @=> float c[];
             for (int j; j < X.cap(); j++) {
                 c[j] => out[j][i];    
             }
@@ -21,7 +21,7 @@ public class Sci {
     }
     
     // cepstral mean subtraction
-    fun float[] cms_win(float x[]) {
+    fun float[] cms(float x[]) {
 
         float sum;
         for (int i; i < x.cap(); i++) {
@@ -86,14 +86,14 @@ public class Sci {
     }
 
     // discrete cosine transform
-    fun float[][] dct(float x[][]) {
+    fun float[][] dctMat(float x[][]) {
         float out[x.cap()][x[0].cap()];
         float temp[x.cap()];
         for (int i; i < x[0].cap(); i++) {
             for (int j; j < x.cap(); j++) {
                 x[j][i] => temp[j];
             }
-            dct_win(temp) @=> float d[];
+            dct(temp) @=> float d[];
             for (int j; j < x.cap(); j++) {
                 d[j] => out[j][i];    
             }
@@ -102,7 +102,7 @@ public class Sci {
     }
 
     // discrete cosine transform
-    fun float[] dct_win(float x[]){
+    fun float[] dct(float x[]){
         x.cap() => int N;
         float out[N];
         for (int k; k < N; k++) {
