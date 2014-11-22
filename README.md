@@ -12,5 +12,5 @@ Currently adding common MIR features into ChucK, which in turn are visualized in
 | Matrix Methods                | Good          | Matrix.ck     |
 | SciPy-like Methods            | Good          | Sci.ck        |
 | Chromagram                    | Good          | Chromagram.ck |
-| Chord Recognition             | In Progress   | ~Chord.ck     |
-| Key Strength                  | In Progress   | ~Key.ck       |
+| Chord Recognition             | In Progress   | Tonality.ck   |
+| Key Strength                  | In Progress   | Tonality.ck   |
