@@ -29,12 +29,47 @@ public class Spectral {
     }
     
     // spectral spread
-    fun float spread(float X[]) {
+    fun float spread(float X[], float sr, int fft_size) {
+        float power[X.cap()];
+        float square[X.cap()];
+        float num;
+        float den;
+        centroid(X, sr, fft_size) => float cent;
+        for(int i; i < X.cap(); i++) {
+            X[i] * X[i] => power[i]; 
+            Math.pow(i - cent, 2) => square[i];
+            power[i] * square[i] +=> num;
+            power[i] +=> den;
+        }
+        
+        return Math.sqrt(num/den);
+        
+
 
     }
 
-    // spectral flatness
-    fun float flatness(float X) {
+    //spectral flatness
+    fun float flatness(float X[]) {
+        1 => float powerNum;
+        float powerDen;
+        float num;
+        float den;
+        
+        for (int i; i < X.cap(); i++) {
+            if(X[i] == 0){
+                .00001 => X[i];
+                <<<"fuck">>>;
+            }
+            (X[i] * X[i]) *=> powerNum; 
+            
+            (X[i] * X[i]) +=> powerDen;
+        }
+
+        powerDen/X.cap() => den;
+        Math.pow(powerNum,1.0/X.cap()) => num;
+        //<<< den, num, powerNum, powerDen >>>;
+
+        return num/den;
 
     }
 }

@@ -46,13 +46,15 @@ while (true) {
     //bnk.sub_cent(blob.fvals(), filts, N, sr) @=> float sc[];
 
     // matrix dot product with transformation matrix
-    mat.dot(blob.fvals(), mx) @=> float X[];
-    spec.centroid(blob.fvals(), sr, N) => float cen;
-    <<< cen >>>;
+    //mat.dot(blob.fvals(), mx) @=> float X[];
+    //spec.centroid(blob.fvals(), sr, N) => float cen;
+    //spec.spread(blob.fvals(), sr, N) => float spred;
+    spec.flatness(blob.fvals()) => float flat;
+    //<<< flat >>>;
 
     // print out centroid
     // chromatic octave wrapping
-    chr.wrap(X) @=> X;
+    //chr.wrap(X) @=> X;
 
     // keystrength cross correlation
     // mat.dot(X, key) @=> X;
@@ -66,8 +68,8 @@ while (true) {
     //mat.cut(X, 0, 12) @=> X;
 
     // rms scaling
-    mat.rmstodb(X) @=> X;
+    //mat.rmstodb(X) @=> X;
     
     // sends data to Processing
-    vis.data(X, "/data");
+    //vis.data(X, "/data");
 }
