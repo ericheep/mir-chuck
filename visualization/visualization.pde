@@ -7,7 +7,7 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-int filts = 88;
+int filts = 12;
 int cols, rows;
 int fr = 3;
 
