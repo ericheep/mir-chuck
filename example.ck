@@ -7,6 +7,7 @@ Sci sci;
 Matrix mat;
 Subband bnk;
 Tonality ton;
+Spectral spec;
 Chromagram chr;
 Visualization vis;
 
@@ -15,7 +16,7 @@ adc => FFT fft => blackhole;
 
 // fft parameters 
 second / samp => float sr;
-4096 => int N => int win => fft.size;
+1024 => int N => int win => fft.size;
 Windowing.hamming(N) => fft.window;
 
 UAnaBlob blob;
@@ -46,7 +47,10 @@ while (true) {
 
     // matrix dot product with transformation matrix
     mat.dot(blob.fvals(), mx) @=> float X[];
+    spec.centroid(blob.fvals(), sr, N) => float cen;
+    <<< cen >>>;
 
+    // print out centroid
     // chromatic octave wrapping
     chr.wrap(X) @=> X;
 

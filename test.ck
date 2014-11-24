@@ -1,14 +1,12 @@
-fun void crossCorr(float x[], float y[][]) {
+second / samp => float sr;
+1024 => int fft_size;
 
+float fft_frqs[fft_size/2 + 1];
+
+// finds center bin frequencies
+for (int i; i < fft_frqs.cap(); i++) {
+    sr/fft_size * i => fft_frqs[i];
+    <<< fft_frqs[i] >>>;
 }
 
-[[1, 1], [1, 1], [1, 1]] @=> float ones[][];
-[[1, 2], [3, 4], [5, 6]] @=> float test[][];
 
-crossCorr(ones, test) @=> float X[][];
-
-for (int i; i < 2; i++) {
-    for (int j; j < 3; j++) {
-        
-    }
-}
