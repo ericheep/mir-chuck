@@ -38,7 +38,7 @@ public class Sci {
     }
 
     // cosine similarity score
-    fun float cosine_dist(float x[], float y[]) {
+    fun float cosineDistance(float x[], float y[]) {
         float sum_x, sum_y, num;
 
         for (int i; i < x.cap(); i++) {
@@ -70,7 +70,7 @@ public class Sci {
     }
 
     // cosine similarity score
-    fun float mat_cosine_compare(float x[][], float y[][]) {
+    fun float cosineDistanceMat(float x[][], float y[][]) {
         0 => float sum;
         float temp_x[x.cap()];
         float temp_y[y.cap()];
@@ -79,7 +79,7 @@ public class Sci {
                 x[j][i] => temp_x[j];
                 y[j][i] => temp_y[j];
             }
-            cosine_dist(temp_x, temp_y) => float temp;
+            cosineDistance(temp_x, temp_y) => float temp;
             temp +=> sum;
         }
         return sum/y[0].cap();

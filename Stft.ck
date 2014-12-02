@@ -25,4 +25,18 @@ public class Stft {
         }
         return out;
     }
+
+    // collects fft frames and returns an stft
+    fun float[][] stft(float x[], float data[][]) {
+        float out[data.cap()][data[0].cap()];
+        for (data[0].cap() - 2 => int i; i >= 0; i--) {
+            for (int j; j < data.cap(); j++) {
+                data[j][i] => out[j][i + 1];
+            }
+        }
+        for (int i; i < x.cap(); i++) {
+            x[i] => out[i][0];
+        }
+        return out;
+    }
 }

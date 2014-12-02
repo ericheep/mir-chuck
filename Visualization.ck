@@ -20,11 +20,10 @@ public class Visualization {
         for (int i; i < x[0].cap(); i++) {
             osc.start(addr);
             for (int j; j < x.cap(); j++) {
-                osc.add(x[j][i]);
+                osc.add(Std.rmstodb(x[j][i]));
             }
             osc.send();
             win => now;
         }
-        osc.send();
     }
 } 

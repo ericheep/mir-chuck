@@ -4,6 +4,7 @@
 // classes
 Mel mel;
 Sci sci;
+Stft stft;
 Matrix mat;
 Subband bnk;
 Tonality ton;
@@ -16,7 +17,7 @@ adc => FFT fft => blackhole;
 
 // fft parameters 
 second / samp => float sr;
-1024 => int N => int win => fft.size;
+512 => int N => int win => fft.size;
 Windowing.hamming(N) => fft.window;
 
 UAnaBlob blob;
@@ -31,8 +32,17 @@ mat.transpose(mx) @=> mx;
 mat.cutMat(mx, 0, win/2) @=> mx;
 
 // keystrength cross correlation
-ton.gomezProfs() @=> float key[][];
-mat.transpose(key) @=> key;
+//ton.gomezProfs() @=> float key[][];
+//mat.transpose(key) @=> key;
+
+float data[win/2][30];
+float zeros[win/2][30];
+for (int i; i < win/2; i++) {
+    for (int j; j < 30; j++) {
+        Math.random2f(0.00001, 0.00002) => zeros[i][j];        
+    }
+}
+int mod;
 
 // main program
 while (true) {
@@ -47,10 +57,10 @@ while (true) {
 
     // matrix dot product with transformation matrix
     //mat.dot(blob.fvals(), mx) @=> float X[];
+
     //spec.centroid(blob.fvals(), sr, N) => float cen;
     //spec.spread(blob.fvals(), sr, N) => float spred;
-    spec.flatness(blob.fvals()) => float flat;
-    //<<< flat >>>;
+    //spec.flatness(blob.fvals()) => float flat;
 
     // print out centroid
     // chromatic octave wrapping
@@ -68,8 +78,15 @@ while (true) {
     //mat.cut(X, 0, 12) @=> X;
 
     // rms scaling
-    //mat.rmstodb(X) @=> X;
-    
-    // sends data to Processing
+    //mat.rmstodb(blob.fvals()) @=> float X[];
+
     //vis.data(X, "/data");
+    stft.stft(blob.fvals(), data) @=> data;
+    (mod + 1) % 2 => mod;
+
+    if (mod == 0) {
+        <<< sci.cosineDistanceMat(data, zeros) >>>;
+        // sends data to Processing
+        vis.matrix(data, "/data", 512::samp);
+    }
 }
