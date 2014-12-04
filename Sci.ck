@@ -2,7 +2,7 @@
 // Eric Heep
 
 public class Sci {
-
+    
     // cepstral mean subtraction
     fun float[][] cmsMat(float X[][]) {
         float out[X.cap()][X[0].cap()];
@@ -17,12 +17,12 @@ public class Sci {
             }
         }
         return out;
-
+        
     }
     
     // cepstral mean subtraction
     fun float[] cms(float x[]) {
-
+        
         float sum;
         for (int i; i < x.cap(); i++) {
             x[i] +=> sum; 
@@ -36,7 +36,7 @@ public class Sci {
         }
         return x;
     }
-
+    
     // cosine similarity score
     fun float cosineDistance(float x[], float y[]) {
         float sum_x, sum_y, num;
@@ -50,11 +50,12 @@ public class Sci {
         Math.sqrt(sum_y) => sum_y;
 
         sum_x * sum_y => float prod;
+        
 
         for (int i; i < y.cap(); i++) {
             x[i] * y[i] +=> num;
         }
-        
+        //<<<num, prod>>>;
         if (num != 0 && prod == 0) {
             return num/(prod + 0.000001);
         }
@@ -68,7 +69,7 @@ public class Sci {
             return 1.0;
         }
     }
-
+    
     // cosine similarity score
     fun float cosineDistanceMat(float x[][], float y[][]) {
         0 => float sum;
@@ -85,6 +86,29 @@ public class Sci {
         return sum/y[0].cap();
     }
 
+    //S IS STILL PRINTING 1.0000 because both incoming x and y are the same matrix
+    //thus the similairty will always be at a peak
+    //although, printing out the similairty matrix in python results differently
+    //1., 0.989946, 0.985464, 0.9822616, 1., ......... slight variation
+    //-__-
+    // cosine similarity for beat spectrum
+    fun float[][] cosineSimMat(float x[][], float y[][]) {
+        0 => float sum;
+        float S[x[0].cap()][y[0].cap()];
+        float temp_x[x.cap()];
+        float temp_y[y.cap()];
+     
+        for (int i; i < x[0].cap(); i++) {
+            for (int j; j < x.cap(); j++) {
+                x[j][i] => temp_x[j];
+                y[j][i] => temp_y[j];
+            }
+            cosineDistance(temp_x, temp_y) @=> S[i][i];
+        }
+        <<<temp_x[0],temp_y[0],S[0][0]>>>;
+        return S;
+    }
+    
     // discrete cosine transform
     fun float[][] dctMat(float x[][]) {
         float out[x.cap()][x[0].cap()];
@@ -100,7 +124,7 @@ public class Sci {
         }
         return out;
     }
-
+    
     // discrete cosine transform
     fun float[] dct(float x[]){
         x.cap() => int N;

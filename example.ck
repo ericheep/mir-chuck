@@ -17,7 +17,7 @@ adc => FFT fft => blackhole;
 
 // fft parameters 
 second / samp => float sr;
-512 => int N => int win => fft.size;
+256 => int N => int win => fft.size;
 Windowing.hamming(N) => fft.window;
 
 UAnaBlob blob;
@@ -36,6 +36,7 @@ mat.cutMat(mx, 0, win/2) @=> mx;
 //mat.transpose(key) @=> key;
 
 float data[win/2][30];
+float S[win/2][30];
 float zeros[win/2][30];
 for (int i; i < win/2; i++) {
     for (int j; j < 30; j++) {
@@ -82,11 +83,12 @@ while (true) {
 
     //vis.data(X, "/data");
     stft.stft(blob.fvals(), data) @=> data;
+    sci.cosineSimMat(data, data) @=> S;
+    //<<<data[0].cap()>>>;
     (mod + 1) % 2 => mod;
-
     if (mod == 0) {
-        <<< sci.cosineDistanceMat(data, zeros) >>>;
+        //<<<S[0][0]>>>;
         // sends data to Processing
-        vis.matrix(data, "/data", 512::samp);
+        vis.matrix(S, "/data", 256::samp);
     }
 }
