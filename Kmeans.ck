@@ -32,7 +32,7 @@ public class Kmeans {
     }
 
     // euclidean distance function for N-features
-    fun float[][] euclid_dist(float x[][], float c[][]) {
+    fun float[][] euclidDist(float x[][], float c[][]) {
         x.cap() => int instances;
         x[0].cap() => int features;
         c.cap() => int centroids; 
@@ -80,8 +80,13 @@ public class Kmeans {
         m => maxIterations;
     }
 
+    fun int[] predict(float t[][], float m[][]) {
+        euclidDist(t, m) @=> float d[][];
+        return argMin(d);
+    }
+
     // main function to train a model
-    fun int[] train(float x[][]) {
+    fun float[][] train(float x[][]) {
 
         // features
         x[0].cap() => int num_features;
@@ -99,9 +104,10 @@ public class Kmeans {
             }
         }
 
+        // main loop, breaks at convergence or at max iterations
         for (int i; i < max_iterations; i++) {
             // returns a distance matrix of clusters by instances 
-            euclid_dist(x, c) @=> float d[][];
+            euclidDist(x, c) @=> float d[][];
             
             // checks for convergence
             c @=> float check[][];
@@ -111,7 +117,8 @@ public class Kmeans {
             
             // recalculate centroids
             centroid(x, idx, k) @=> c;
-            
+           
+            // checks for convergence
             int check_sum;
             for (int i; i < c.cap(); i++) {
                 for (int j; j < c[0].cap(); j++) {
@@ -125,7 +132,7 @@ public class Kmeans {
                 break;
             }
         }
-        return idx;
+        return c;
     }
 }
 
@@ -139,9 +146,16 @@ Kmeans km;
  [4.0, 2.1, 4.4, 1.1, 0.1], [3.9, 2.0, 4.3, 1.0, 0.0], [4.1, 1.9, 5.9, 1.2, 0.5]]
  @=> float x[][];
 
-km.train(x) @=> int idx[];
+// training the model
+km.train(x) @=> float model[][];
 
-for (int i; i < idx.cap(); i++) {
-    <<< idx[i] >>>;
+// test data
+[[4.0, 2.1, 4.4, 1.1, 0.1], [4.0, 2.1, 4.4, 1.1, 0.1], [1.2, 3.1, 1.3, 4.1, 2.0]] @=> float test[][];
+
+// predict using the model
+km.predict(test, model) @=> int score[];
+
+for (int i; i < score.cap(); i++) { 
+    <<< score[i] >>>;
 }
 
