@@ -20,28 +20,36 @@ public class Tonality {
 
     // major and minor chord templates
     fun float[][] chord(string m) {
-        float min[12][12];
-        float maj[12][12];
+        float c[12][12];
+        int third, fifth;
+
+        if (m == "major") {
+            4 => third;
+            7 => fifth;
+        }
+        if (m == "minor") {
+            3 => third;
+            7 => fifth;
+        }
+        if (m == "dim") {
+            3 => third;
+            6 => fifth;
+        }
+        if (m == "aug") {
+            4 => third;
+            8 => fifth;
+        }
 
         int pos;
         for (int i; i < 12; i++) {
             for (int j; j < 12; j++) {
-                if (j == (0 + pos) % 12 || j == (4 + pos) % 12 || j == (7 + pos) % 12) {
-                    1 => maj[j][i];
-                }
-                if (j == (0 + pos) % 12 || j == (5 + pos) % 12 || j == (7 + pos) % 12) {
-                    1 => min[i][j];
+                if (j == (0 + pos) % 12 || j == (third + pos) % 12 || j == (fifth + pos) % 12) {
+                    1 => c[j][i];
                 }
             }
             pos++;
         }
-
-        if (m == "major") {
-            return maj; 
-        }
-        if (m == "minor") {
-            return min;
-        }
+        return c;
     }
 
     // 6D tonal centroid, (Harte et al., 2006)
@@ -71,10 +79,3 @@ public class Tonality {
     }
 
 }
-
-Tonality t;
-
-t.tonalCentroid() @=> float tc[][];
-
-
-
