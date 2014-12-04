@@ -80,6 +80,7 @@ public class Kmeans {
         m => maxIterations;
     }
 
+    // returns an array of predicted scores
     fun int[] predict(float t[][], float m[][]) {
         euclidDist(t, m) @=> float d[][];
         return argMin(d);
