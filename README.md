@@ -16,6 +16,8 @@ Currently adding common MIR features into ChucK, which in turn are visualized in
 | Key Strength                  | In Progress   | Tonality.ck   |
 
 
-| Machien Learning Methods      | State         | File          |
+| Machine Learning Methods      | State         | File          |
 | ------------------------------| ------------- | ------------- |
 | K-Means Clustering            | Good          | Kmeans.ck     |
+| Linear Regression             | In Progress   | ?             |
+| Logistric Regression          | In Progress   | ?             |
