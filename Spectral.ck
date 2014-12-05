@@ -1,4 +1,5 @@
 // Spectral.ck
+// Eric Heep and Daniel Reyes
 
 public class Spectral {
 
@@ -30,46 +31,49 @@ public class Spectral {
     
     // spectral spread
     fun float spread(float X[], float sr, int fft_size) {
+
+        // required centroid for spread
+        centroid(X, sr, fft_size) => float cent;
+
+        // array for our bin frequencies
+        float fft_frqs[fft_size/2 + 1];
+
+        // finds center bin frequencies
+        for (int i; i < fft_frqs.cap(); i++) {
+            sr/fft_size * i => fft_frqs[i];
+        }
+
+        float num, den;
         float power[X.cap()];
         float square[X.cap()];
-        float num;
-        float den;
-        centroid(X, sr, fft_size) => float cent;
+
         for(int i; i < X.cap(); i++) {
             X[i] * X[i] => power[i]; 
-            Math.pow(i - cent, 2) => square[i];
+            Math.pow(fft_frqs[i] - cent, 2) => square[i];
             power[i] * square[i] +=> num;
             power[i] +=> den;
         }
-        
         return Math.sqrt(num/den);
-        
-
-
     }
 
     //spectral flatness
     fun float flatness(float X[]) {
-        1 => float powerNum;
-        float powerDen;
+        1.0 => float prod;
+        0.0 => float sum;
         float num;
         float den;
         
         for (int i; i < X.cap(); i++) {
             if(X[i] == 0){
                 .00001 => X[i];
-                <<<"fuck">>>;
             }
-            (X[i] * X[i]) *=> powerNum; 
-            
-            (X[i] * X[i]) +=> powerDen;
+            X[i] *=> prod; 
+            X[i] +=> sum;
         }
+        Math.pow(prod, (1.0/X.cap())) => num;
+        sum/X.cap() => den;
 
-        powerDen/X.cap() => den;
-        Math.pow(powerNum,1.0/X.cap()) => num;
-        //<<< den, num, powerNum, powerDen >>>;
-
+        <<< num/den >>>;
         return num/den;
-
     }
 }
