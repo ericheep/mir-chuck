@@ -88,7 +88,10 @@ public class Matrix {
             }
             return out;
         }
-        else <<< "Number of x columns must match number of y rows", "" >>>;
+        else {
+            <<< "Length of 'x' array must match number of 'y' rows.", "" >>>;
+            me.exit();
+        }
     }
 
     // dot product
@@ -110,7 +113,10 @@ public class Matrix {
             }
             return out;
         }
-        else <<< "Number of x columns must match number of y rows", "" >>>;
+        else {
+            <<< "Number of x columns must match number of y rows", "" >>>;
+            me.exit();
+        }
     }
 
     // log transform
@@ -170,6 +176,20 @@ public class Matrix {
             sum/rows => out[i];
         }
         return out;
+    }
+    
+    // normalize
+    fun float[] normalize(float x[]) {
+        float max;
+        for (int i; i < x.cap(); i++) {
+            if (x[i] > max) {
+                x[i] => max;
+            }
+        }
+        for (int i; i < x.cap(); i++) {
+            x[i]/max => x[i];
+        }
+        return x;
     }
 
     // power function
