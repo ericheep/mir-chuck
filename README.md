@@ -14,3 +14,8 @@ Currently adding common MIR features into ChucK, which in turn are visualized in
 | Chromagram                    | Good          | Chromagram.ck |
 | Chord Recognition             | In Progress   | Tonality.ck   |
 | Key Strength                  | In Progress   | Tonality.ck   |
+
+
+| Machien Learning Methods      | State         | File          |
+| ------------------------------| ------------- | ------------- |
+| K-Means Clustering            | Good          | Kmeans.ck     |
