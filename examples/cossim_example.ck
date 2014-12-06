@@ -37,6 +37,7 @@ mat.cutMat(mx, 0, win/2) @=> mx;
 
 float data[win/2][30];
 float S[win/2][30];
+float auto[60];
 float zeros[win/2][30];
 for (int i; i < win/2; i++) {
     for (int j; j < 30; j++) {
@@ -84,6 +85,7 @@ while (true) {
     //vis.data(X, "/data");
     stft.stft(blob.fvals(), data) @=> data;
     sci.cosineSimMat(data, data) @=> S;
+    sci.autoCorr(S) @=> auto;
     //<<<data[0].cap()>>>;
     (mod + 1) % 2 => mod;
     if (mod == 0) {
