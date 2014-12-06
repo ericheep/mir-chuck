@@ -2,16 +2,17 @@
 // Eric heep
 
 // classes
-Machine.add(me.dir() + "/Chromagram.ck");
-Machine.add(me.dir() + "/Kmeans.ck");
-Machine.add(me.dir() + "/Matrix.ck");
-Machine.add(me.dir() + "/Mel.ck");
-Machine.add(me.dir() + "/Sci.ck");
-Machine.add(me.dir() + "/Stft.ck");
-Machine.add(me.dir() + "/Spectral.ck");
-Machine.add(me.dir() + "/Subband.ck");
-Machine.add(me.dir() + "/Tonality.ck");
-Machine.add(me.dir() + "/Visualization.ck");
+Machine.add(me.dir(-1) + "/Chromagram.ck");
+Machine.add(me.dir(-1) + "/Kmeans.ck");
+Machine.add(me.dir(-1) + "/Matrix.ck");
+Machine.add(me.dir(-1) + "/Mel.ck");
+Machine.add(me.dir(-1) + "/Sci.ck");
+Machine.add(me.dir(-1) + "/Stft.ck");
+Machine.add(me.dir(-1) + "/Spectral.ck");
+Machine.add(me.dir(-1) + "/Subband.ck");
+Machine.add(me.dir(-1) + "/Tonality.ck");
+Machine.add(me.dir(-1) + "/Visualization.ck");
 
 // main program
-Machine.add(me.dir() + "/kmeans_example.ck");
+// Machine.add(me.dir() + "/kmeans_example.ck");
+Machine.add(me.dir() + "/cossim_example.ck");
