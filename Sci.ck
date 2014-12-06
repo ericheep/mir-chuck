@@ -105,12 +105,7 @@ public class Sci {
         }
         return sum/y[0].cap();
     }
-
-    //S IS STILL PRINTING 1.0000 because both incoming x and y are the same matrix
-    //thus the similarity will always be at a peak
-    //although, printing out the similairty matrix in python results differently
-    //1., 0.989946, 0.985464, 0.9822616, 1., ......... slight variation
-    //-__-
+    // WIP
     // cosine similarity for beat spectrum
     fun float[][] cosineSimMat(float x[][], float y[][]) {
         0 => float sum;
@@ -123,10 +118,10 @@ public class Sci {
                 x[j][i] => temp_x[j];
                 y[j][i] => temp_y[j];
             }
-            dot(temp_x, temp_y) / veclen(temp_x) * veclen(temp_y) @=> S[i][i];
+            dot(temp_x, temp_y) / veclen(temp_x) * veclen(temp_y) => S[i][i];
             //<<<S[1][1]>>>;
         }
-        <<<temp_x[0],temp_y[0],S[0][0]>>>;
+        //<<<temp_x[0],temp_y[0],S[0][0]>>>;
         return S;
     }
     

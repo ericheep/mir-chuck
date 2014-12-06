@@ -89,7 +89,7 @@ while (true) {
     //<<<data[0].cap()>>>;
     (mod + 1) % 2 => mod;
     if (mod == 0) {
-        //<<<S[0][0]>>>;
+        <<<S[0][1],S[0][2],S[0][3],S[0][4]>>>;
         // sends data to Processing
         vis.matrix(S, "/data", 256::samp);
     }
