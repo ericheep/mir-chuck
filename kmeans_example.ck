@@ -16,7 +16,6 @@ Visualization vis;
 Hid hi;
 HidMsg msg;
 
-
 if (!hi.openKeyboard(0)) {
     me.exit();
 }
@@ -41,35 +40,40 @@ km.clusters(2);
 float X[win/2];
 
 // control variables
-float db, spr, cent, fl;
-int inc, record_stft, rec_latch, test_ready;
+float db, spr, cent;
+int inc, rec_stft, rec_latch, test_ready;
+
+// decibel threshold
 40 => float thresh;
 
-float max_data[32][2000];
+// max data size for our training features
+float max_data[2][2000];
 float train[0][0];
 float model[0][0];
 
+spork ~ keyboard();
 analysis();
-keyboard();
 
 // records while '~' is held down
 // only audio above 40db will be recorded into training model 
 fun void recData(float x[], float r) {
     x.cap() => int rows;
-    if (record_stft && r > thresh) {
+    if (rec_stft && r > thresh) {
         for (int i; i < rows; i++) {
             x[i] => max_data[i][inc];
         }
+
         inc++;
         1 => rec_latch;
         <<< inc, "" >>>;
     }
-    else if (record_stft == 0 && rec_latch == 1) {
-        1 => test_ready;
+    else if (rec_stft == 0 && rec_latch == 1) {
         max_data @=> train;
         rows => train.size;
         inc => train[0].size;
         km.train(train) @=> model;
+
+        1 => test_ready;
         0 => rec_latch;
         0 => inc;
     }
@@ -83,23 +87,23 @@ fun void keyboard() {
         while (hi.recv(msg)) {
             if (msg.isButtonDown()) {
                 if (msg.ascii == 96) {
-                    1 => record_stft; 
+                    1 => rec_stft; 
                 }
             }
             if (msg.isButtonUp()) {
                 if (msg.ascii == 96) {
-                    0 => record_stft; 
+                    0 => rec_stft; 
                 }
             }
         }
     }
 }
 
-
 // main program
 fun void analysis() {
     while (true) {
-        (win/4)::samp => now;
+        // 50% hop size
+        (win/2)::samp => now;
     
         // for rms filter
         rms.upchuck() @=> rms_blob;
@@ -115,11 +119,16 @@ fun void analysis() {
         Std.rmstodb(rms_blob.fval(0)) => db;
 
         // records data and then trains, while ~ is held down
-        recData([spr, cent, fl], db);
+        recData([spr, cent], db);
+        
+        // shows features pre-training
+        if (rec_stft == 0 && test_ready == 0) {
+            <<< "Spread:", spr, "Centroid:", cent >>>;
+        }
 
-         <<< spr, cent >>>;
-        if (test_ready && db > thresh) {
-            <<< km.singlePredict([spr, cent, fl], model) >>>;
+        // shows cluster 
+        if (rec_stft == 0 && test_ready) {
+            <<< "Cluster:", km.singlePredict([spr, cent], model), "Spread:", spr, "Centroid:", cent >>>;
         }
     }
 }

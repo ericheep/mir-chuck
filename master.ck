@@ -14,4 +14,4 @@ Machine.add(me.dir() + "/Tonality.ck");
 Machine.add(me.dir() + "/Visualization.ck");
 
 // main program
-Machine.add(me.dir() + "/6D_kmeans.ck");
+Machine.add(me.dir() + "/kmeans_example.ck");
