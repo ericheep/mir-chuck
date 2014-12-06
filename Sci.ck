@@ -1,7 +1,27 @@
 // Sci.ck
 // Eric Heep
 
+
+
 public class Sci {
+    
+    // matrix multiply
+    fun float dot(float x[], float y[]){
+        float result;
+        for(int i; i < x.cap(); i++){
+            x[i] * y[i] +=> result;
+        }
+        return result;
+    }
+    
+    // returns magnitude
+    fun float veclen(float x[]){
+        float temp;
+        for(int i; i < x.cap(); i++){
+            x[i] * x[i] +=> temp;
+        }
+        return Math.sqrt(temp);
+    }
     
     // cepstral mean subtraction
     fun float[][] cmsMat(float X[][]) {
@@ -87,14 +107,14 @@ public class Sci {
     }
 
     //S IS STILL PRINTING 1.0000 because both incoming x and y are the same matrix
-    //thus the similairty will always be at a peak
+    //thus the similarity will always be at a peak
     //although, printing out the similairty matrix in python results differently
     //1., 0.989946, 0.985464, 0.9822616, 1., ......... slight variation
     //-__-
     // cosine similarity for beat spectrum
     fun float[][] cosineSimMat(float x[][], float y[][]) {
         0 => float sum;
-        float S[x[0].cap()][y[0].cap()];
+        float S[x[0].cap()][x[0].cap()];
         float temp_x[x.cap()];
         float temp_y[y.cap()];
      
@@ -103,10 +123,23 @@ public class Sci {
                 x[j][i] => temp_x[j];
                 y[j][i] => temp_y[j];
             }
-            cosineDistance(temp_x, temp_y) @=> S[i][i];
+            dot(temp_x, temp_y) / veclen(temp_x) * veclen(temp_y) @=> S[i][i];
+            //<<<S[1][1]>>>;
         }
         <<<temp_x[0],temp_y[0],S[0][0]>>>;
         return S;
+    }
+    
+    // autocorrelation
+    fun float[] autoCorr(float S[][]){
+        float B[S.cap()];
+        for (1 => int k; k < S.cap(); k++){
+            for(int i; i<  S.cap(); i++){
+                S[i][i] * S[k][k] +=> B[k];
+            }
+        }
+        //<<<B[0]>>>;
+        return B;
     }
     
     // discrete cosine transform
