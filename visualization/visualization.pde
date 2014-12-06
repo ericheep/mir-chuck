@@ -7,9 +7,9 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-int filts = 12;
+int filts = 6;
 int cols, rows;
-int fr = 3;
+int fr = 6;
 
 float hght;
 float[][] mov_spectra;
@@ -44,7 +44,7 @@ void mov_specgram() {
 
 void setup() {
   noStroke();
-  //frameRate(60);
+  frameRate(60);
   size(displayWidth, displayHeight);
   oscP5 = new OscP5(this, 12001);
   myRemoteLocation = new NetAddress("127.0.0.1", 12000);

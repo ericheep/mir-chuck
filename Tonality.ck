@@ -23,11 +23,11 @@ public class Tonality {
         float c[12][12];
         int third, fifth;
 
-        if (m == "major") {
+        if (m == "maj") {
             4 => third;
             7 => fifth;
         }
-        if (m == "minor") {
+        if (m == "min") {
             3 => third;
             7 => fifth;
         }
@@ -44,7 +44,8 @@ public class Tonality {
         for (int i; i < 12; i++) {
             for (int j; j < 12; j++) {
                 if (j == (0 + pos) % 12 || j == (third + pos) % 12 || j == (fifth + pos) % 12) {
-                    1 => c[j][i];
+                    // arithmetic mean of chord entries
+                    0.333 => c[j][i];
                 }
             }
             pos++;
@@ -70,7 +71,6 @@ public class Tonality {
                     else {
                         r[i] * Math.cos(l * (num[i] * pi)/den[i]) @=> tc[i + j][l];
                     }
-                    <<< tc[i + j][l] >>>;
                 }
             }
         }

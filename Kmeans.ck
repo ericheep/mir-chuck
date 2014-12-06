@@ -31,13 +31,13 @@ public class Kmeans {
         return c;
     }
 
-    // euclidean distance function for N-features
+    // euclidean distance function for a matrix of N-features
     fun float[][] euclidDist(float x[][], float c[][]) {
         x.cap() => int instances;
         x[0].cap() => int features;
         c.cap() => int centroids; 
 
-        // distance arrays
+        // distance matrix
         float d[instances][centroids];
         for (int k; k < centroids; k++) {
             for (int i; i < instances; i++) {
@@ -51,7 +51,40 @@ public class Kmeans {
         return d;
     }
 
-    // finds the minimum value indices across thes rows of a matrix
+    // euclidean distance function for an array of N-features
+    fun float[] singleEuclidDist(float x[], float c[][]) {
+        x.cap() => int features;        
+        c.cap() => int centroids;
+
+        // distance array
+        float d[centroids];
+        for (int k; k < centroids; k++) {
+            float sum;
+            for (int j; j < features; j++) {
+                Math.pow(x[j] - c[k][j], 2) +=> sum; 
+            }
+            Math.sqrt(sum) => d[k];
+        }
+        return d;
+    }
+
+    // finds the minimum index of an array
+    fun int singleArgMin(float d[]) {
+        d.cap() => int clusters;
+       
+        // low index
+        int idx;
+        d[0] => float min;
+        for (int i; i < clusters; i++) {
+            if (d[i] < min) {
+                d[i] => min;
+                i => idx;;
+            }
+        }
+        return idx;
+    }
+
+    // finds the minimum indices across the rows of a matrix
     fun int[] argMin(float d[][]) {
         d.cap() => int instances;
         d[0].cap() => int clusters;
@@ -78,6 +111,11 @@ public class Kmeans {
     // max iterations in case of non-convergence
     fun void maxIterations(int m) {
         m => maxIterations;
+    }
+
+    fun int singlePredict(float x[], float m[][]) {
+        singleEuclidDist(x, m) @=> float d[]; 
+        return singleArgMin(d);
     }
 
     // returns an array of predicted scores
@@ -137,6 +175,7 @@ public class Kmeans {
     }
 }
 
+/*
 Kmeans km;
 
 // data
@@ -151,12 +190,12 @@ Kmeans km;
 km.train(x) @=> float model[][];
 
 // test data
-[[4.0, 2.1, 4.4, 1.1, 0.1], [4.0, 2.1, 4.4, 1.1, 0.1], [1.2, 3.1, 1.3, 4.1, 2.0]] @=> float test[][];
+//[[4.0, 2.1, 4.4, 1.1, 0.1], [4.0, 2.1, 4.4, 1.1, 0.1], [1.2, 3.1, 1.3, 4.1, 2.0]] @=> float test[][];
 
 // predict using the model
-km.predict(test, model) @=> int score[];
-
-for (int i; i < score.cap(); i++) { 
-    <<< score[i] >>>;
-}
-
+//km.predict(test, model) @=> int score[];
+<<< km.singlePredict([1.0, 3.0, 1.0, 4.0, 2.0], model) >>>; 
+//for (int i; i < score.cap(); i++) { 
+//    <<< score[i] >>>;
+//}
+*/
