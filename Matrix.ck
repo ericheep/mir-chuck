@@ -136,7 +136,7 @@ public class Matrix {
         }
     }
 
-    // log transform
+    // matrix log e transform
     fun float[][] logMat(float x[][]) {
         float out[x.cap()][x[0].cap()];
         float temp[x.cap()];
@@ -152,7 +152,7 @@ public class Matrix {
         return out;
     }
 
-    // log transform
+    // log e transform
     fun float[] log(float x[]) {
         for (int i; i < x.cap(); i++) {
             Math.log(x[i] + 1.0) => x[i];
@@ -160,16 +160,25 @@ public class Matrix {
         return x;
     }
 
-    // log transform
+    // log10 transform
     fun float[] log10(float x[]) {
         for (int i; i < x.cap(); i++) {
             Math.log10(x[i] + 1.0) => x[i];
         }
         return x;
     }
+    
+    // mean average of an array
+    fun float mean(float x[]) {
+        float sum;
+        for (int i; i < x.cap(); i++) {
+            x[i] +=> sum;
+        }
+        return sum/x.cap();
+    }
 
     // mean average of a matrix by rows or columns
-    fun float[] mean(float x[][], int axis) {
+    fun float[] meanMat(float x[][], int axis) {
         int rows, cols;
         if (axis == 0) {
             x.cap() => rows;
@@ -194,7 +203,7 @@ public class Matrix {
         }
         return out;
     }
-    
+
     // normalize
     fun float[] normalize(float x[]) {
         float max;
