@@ -40,7 +40,7 @@ km.clusters(2);
 float X[win/2];
 
 // control variables
-float db, spr, cent;
+float db, spr, cent, hfc;
 int inc, rec_stft, rec_latch, test_ready;
 
 // decibel threshold
@@ -114,12 +114,13 @@ fun void analysis() {
         // low level features
         spec.centroid(blob.fvals(), sr, N) => cent;
         spec.spread(blob.fvals(), sr, N) => spr;
+        spec.hfc(blob.fvals(), N) => hfc;
 
         // db filter variable
         Std.rmstodb(rms_blob.fval(0)) => db;
 
         // records data and then trains, while ~ is held down
-        recData([spr, cent], db);
+        recData([hfc, cent], db);
         
         // shows features pre-training
         if (rec_stft == 0 && test_ready == 0) {
