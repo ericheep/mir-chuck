@@ -13,15 +13,14 @@ public class LiSaCluster extends Chubgraph{
     Kmeans km;
 
     // sound chain
-    inlet => FFT fft => blackhole;
+    inlet => FFT fft => RMS r =>  blackhole;
     inlet => LiSa mic => outlet;
-
-    // fft array
-    float X[0];
-
-    // fft vars
     UAnaBlob blob;
+    UAnaBlob rms_blob;
+
+    // fft variables
     int N;
+    float X[0];
     dur hop_time, max_duration; 
     second/samp => float sr;
 
@@ -33,6 +32,9 @@ public class LiSaCluster extends Chubgraph{
 
     // array to store cluster indices 
     int idx[0];
+    
+    // variable for which cluster to playback
+    int which;
 
     // initialize
     fftSize(1024);
@@ -40,24 +42,33 @@ public class LiSaCluster extends Chubgraph{
     maxDuration(10::second);
 
     // feature vars
-    int cent_on, spr_on, hfc_on, mel_on, mfcc_on;
+    int cent_on, spr_on, hfc_on, rms_on, mel_on, mfcc_on;
     int mel_feats, mfcc_feats;
 
     // transformation array in case of mel/bark features
     float mx[0][0];
 
+    // toggles collection of spectral centroids
     fun void centroid(int on) {
         on => cent_on;
     }
 
+    // toggles collection of spectral spreads
     fun void spread(int on) {
         on => spr_on;
     }
 
+    // toggles collection of high-frequency-content 
     fun void hfc(int on) {
         on => hfc_on;
     }
 
+    // toggles collection of root-mean square data
+    fun void rms(int on) {
+        on => rms_on;
+    }
+
+    // toggles collection of mel-filtered data
     fun void mel(int on) {
         on => mel_on;
         24 => mel_feats;    
@@ -68,6 +79,8 @@ public class LiSaCluster extends Chubgraph{
         }
     }
 
+    // optional parameters for matrix transformation
+    // types include 'mel', 'bark', and 'constantQ'
     fun void mel(int filts, float width, string type) {
         1 => mel_on;
         filts => mel_feats;    
@@ -76,38 +89,51 @@ public class LiSaCluster extends Chubgraph{
         mat.cutMat(mx, 0, N/2) @=> mx;
     }
 
+    // internal function that recalls the number enabled features
     fun int numFeatures() {
         int num;
         cent_on +=> num;
         spr_on +=> num;
         hfc_on +=> num;
+        rms_on +=> num;
         mel_feats +=> num;
         mfcc_feats +=> num;
-        <<< num >>>;
         return num;
     }
 
-    // sets N, hop, and window using fft size
+    // sets N, hop, optional
+    // currently hardcoded to always use a hamming window
     fun void fftSize(int fft_size) {
         fft_size => N => fft.size;
         hop((N/2)::samp);
         Windowing.hamming(N) => fft.window;
     }
 
-    // option to change default 50% hop
+    // set hop size other than 50% default, optional
     fun void hop(dur h) {
         h => hop_time;
         (hop_time/samp) $ int => X.size;
     }
 
-    fun void clusters(int c) {
+    // sets which cluster to playback
+    fun void cluster(float c) {
+        if (c != 1.0) {
+            (c * num_clusters) $ int => which;
+            <<< which >>>;
+        }
+    }
+
+    // sets number of k-means clusters to utilize
+    fun void numClusters(int c) {
         c => num_clusters;
     }
 
+    // sets maximum duration of the LiSa input buffer
     fun void maxDuration(dur d) {
         d => max_duration;
     }
 
+    // sets durational length of each sample step
     fun void stepLength(dur s) {
         s => step_length;
     }
@@ -116,6 +142,8 @@ public class LiSaCluster extends Chubgraph{
     fun void play(int p) {
         // ensures model is finished training before playing
         hop_time => now;
+
+        // plays until play(0) is called
         if (p) {
             1 => play_active;
             spork ~ playing();
@@ -129,7 +157,7 @@ public class LiSaCluster extends Chubgraph{
         mic.play(1);
         while (play_active) {
             Math.random2(0, idx.cap() - 1) => int rand;
-            if (idx[rand] == 0) {
+            if (idx[rand] == which) {
                 mic.playPos(rand * step_length);
                 step_length => now;
             }
@@ -148,18 +176,17 @@ public class LiSaCluster extends Chubgraph{
         }
     }
 
+    // records data and features while active, sends raw_features to train
     fun void recording() {
-        // allocating buffer memory
+        // allocates buffer memory and sets corresponding maximium frame size
         mic.duration(max_duration);
-
-        // max frame size corresponding to max duration
         (max_duration/hop_time) $ int => int max_frames;
 
         // retreives number of features 
         numFeatures() => int num_features;
 
         // will store our raw features
-        float features[max_frames][num_features];
+        float raw_features[max_frames][num_features];
         int frame_idx, feature_idx;
 
         // starts recording while gathering features
@@ -171,23 +198,28 @@ public class LiSaCluster extends Chubgraph{
             
             // fft array
             fft.upchuck() @=> blob;
+            r.upchuck() @=> rms_blob;
 
             // low level features
+            if (rms_on) {
+                rms_blob.fval(0) => raw_features[frame_idx][feature_idx];
+                feature_idx++;
+            }
+
             if (cent_on) {
-                spec.centroid(blob.fvals(), sr, N) => features[frame_idx][feature_idx];
+                spec.centroid(blob.fvals(), sr, N) => raw_features[frame_idx][feature_idx];
                 feature_idx++;
             }
 
             if (spr_on) {
-                spec.spread(blob.fvals(), sr, N) => features[frame_idx][feature_idx];
+                spec.spread(blob.fvals(), sr, N) => raw_features[frame_idx][feature_idx];
                 feature_idx++;
-                //<<< features[frame_idx][0], features[frame_idx][1] >>>;
             }
 
             if (mel_on) {
                 mat.dot(blob.fvals(), mx) @=> float mel_filts[];
                 for (int i; i < mel_filts.cap(); i++) {
-                    mel_filts[i] => features[frame_idx][feature_idx];
+                    mel_filts[i] => raw_features[frame_idx][feature_idx];
                     feature_idx++;
                 }
             }
@@ -195,25 +227,26 @@ public class LiSaCluster extends Chubgraph{
             frame_idx++;
             0 => feature_idx;
         }
-
-        now - past => dur rec_time;
         mic.record(0);
 
         // segmenting variables
+        now - past => dur rec_time;
         ((rec_time/step_length) $ int) + 1 => int num_steps;
         (rec_time/hop_time) $ int => int num_frames;
-        num_frames => features.size;
 
-        train(features, num_steps, num_frames);
+        // discards empty frames
+        num_frames => raw_features.size;
+
+        train(raw_features, num_steps, num_frames);
     }
 
-    fun void train(float data[][], int steps, int frames) {
-        
-        0 => int div;
-        0 => int inc;
-       
-        float sum[data[0].cap()];
-        float training[steps][data[0].cap()];
+    fun void train(float raw[][], int steps, int frames) {
+        // incrementers for mean calcuation  
+        int div, inc;
+      
+        // array for storing sums of all features
+        float sum[raw[0].cap()];
+        float training[steps][raw[0].cap()];
 
         // finds means of all frames per segment
         for (int i; i < frames; i++) {
@@ -224,18 +257,23 @@ public class LiSaCluster extends Chubgraph{
                     sum[j]/div => training[inc][j];
                     0.0 => sum[j];
                 }
-                // resetting mean division var and sum array
-                0 => div;
-                // keeps track of steps
+
+                // increments steps and resets div 
                 inc++; 
+                0 => div;
             }
             for (int j; j < sum.cap(); j++) {
-                data[i][j] +=> sum[j];
+                raw[i][j] +=> sum[j];
             }
             div++;
         }
         
+        for (int i; i < steps; i++) {
+            training[i][0];
+        }
+
         // in the case that the last step is too short to collect data
+        // the last frame is discarded
         // otherwise, there'd be a cluster dedicated to no data
         if (training[steps - 1][0] == 0) {
             steps - 1 => training.size;
@@ -248,7 +286,7 @@ public class LiSaCluster extends Chubgraph{
         km.train(training) @=> float model[][];
         km.predict(training, model) @=> idx;
         for (int i; i < idx.cap(); i++) {
-           <<< idx[i] >>>;
+            <<< idx[i] >>>;
         }
     }
 }
