@@ -253,6 +253,10 @@ public class LiSaCluster extends Chubgraph{
                     feature_idx++;
                 }
             }
+            if (hfc_on) {
+                spec.hfc(blob.fvals(), N) => raw_features[frame_idx][feature_idx];
+                feature_idx++;
+            }
 
             frame_idx++;
             0 => feature_idx;

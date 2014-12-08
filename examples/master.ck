@@ -15,4 +15,4 @@ Machine.add(me.dir(-1) + "/Visualization.ck");
 
 // main program
 // Machine.add(me.dir() + "/kmeans_example.ck");
-Machine.add(me.dir() + "/cossim_example.ck");
+Machine.add(me.dir() + "/kmeans_example.ck");

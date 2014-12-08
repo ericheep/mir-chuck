@@ -120,7 +120,7 @@ fun void analysis() {
         Std.rmstodb(rms_blob.fval(0)) => db;
 
         // records data and then trains, while ~ is held down
-        recData([hfc, cent], db);
+        recData([hfc], db);
         
         // shows features pre-training
         if (rec_stft == 0 && test_ready == 0) {
