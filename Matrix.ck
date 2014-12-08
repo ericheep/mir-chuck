@@ -68,23 +68,6 @@ public class Matrix {
         }
         return out;
     }
-    
-    // returns magnitude
-    fun float veclen(float x[]){
-        float temp;
-        for(int i; i < x.cap(); i++){
-            x[i] * x[i] +=> temp;
-        }
-        return Math.sqrt(temp);
-    }
-    // matrix multiply
-    fun float matMultiply(float x[], float y[]){
-        float result;
-        for(int i; i < x.cap(); i++){
-            x[i] * y[i] +=> result;
-        }
-        return result;
-    }
 
     // dot product
     fun float[] dot(float x[], float y[][]) {
@@ -256,4 +239,6 @@ public class Matrix {
         }
         return out;
     }
+    
+    
 }

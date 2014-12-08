@@ -23,6 +23,7 @@ public class Stft {
                 blob.fvals()[j] => out[j][i];
             }
         }
+        <<<"stft done">>>;
         return out;
     }
 

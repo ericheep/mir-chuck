@@ -12,6 +12,7 @@ Spectral spec;
 Chromagram chr;
 Visualization vis;
 
+
 // sound chain
 adc => FFT fft => blackhole;
 
@@ -21,6 +22,10 @@ second / samp => float sr;
 Windowing.hamming(N) => fft.window;
 
 UAnaBlob blob;
+
+SndBuf audio;
+me.dir() + "/trumpet.wav" => string filename;
+filename => audio.read;
 
 //[0.0, 100.0, 500.0, 1000.0, 10000.0, 22050.0] @=> float filts[];
 
@@ -37,7 +42,6 @@ mat.cutMat(mx, 0, win/2) @=> mx;
 
 float data[win/2][30];
 float S[win/2][30];
-float auto[60];
 float zeros[win/2][30];
 for (int i; i < win/2; i++) {
     for (int j; j < 30; j++) {
@@ -83,13 +87,14 @@ while (true) {
     //mat.rmstodb(blob.fvals()) @=> float X[];
 
     //vis.data(X, "/data");
+    
     stft.stft(blob.fvals(), data) @=> data;
     sci.cosineSimMat(data, data) @=> S;
-    sci.autoCorr(S) @=> auto;
-    //<<<data[0].cap()>>>;
-    (mod + 1) % 2 => mod;
+    sci.autoCorr(S) @=> float auto[];
+    //<<<data[0][0],data[0][1],data[0][2],data[0][3]>>>;
+        (mod + 1) % 2 => mod;
     if (mod == 0) {
-        <<<S[0][1],S[0][2],S[0][3],S[0][4]>>>;
+        //<<<S[0][0],S[0][1],S[0][2],S[0][3]>>>;
         // sends data to Processing
         vis.matrix(S, "/data", 256::samp);
     }
