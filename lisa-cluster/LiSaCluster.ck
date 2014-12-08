@@ -43,7 +43,7 @@ public class LiSaCluster extends Chubgraph{
     maxDuration(10::second);
 
     // feature vars
-    int hfc_on, rms_on, cent_on, crest_on, subcent_on, spr_on, mel_on, mfcc_on;
+    int hfc_on, rms_on, crest_on, cent_on, subcent_on, spr_on, mel_on, mfcc_on;
     int subcent_feats, mel_feats, mfcc_feats, mfcc_min, mfcc_max;
 
     // transformation array in case of mel/bark features
@@ -147,8 +147,8 @@ public class LiSaCluster extends Chubgraph{
         int num;
         rms_on +=> num;
         hfc_on +=> num;
-        cent_on +=> num;
         crest_on +=> num;
+        cent_on +=> num;
         spr_on +=> num;
         subcent_feats +=> num;
         mel_feats +=> num;
@@ -268,14 +268,15 @@ public class LiSaCluster extends Chubgraph{
                 spec.hfc(blob.fvals()) => raw_features[frame_idx][feature_idx];
                 feature_idx++;
             }
+ 
+            if (crest_on) {
+                spec.spectralCrest(blob.fvals()) => raw_features[frame_idx][feature_idx];
+                feature_idx++;
+            }
+
 
             if (cent_on) {
                 spec.centroid(blob.fvals(), sr, N) => raw_features[frame_idx][feature_idx];
-                feature_idx++;
-            }
-            
-            if (crest_on) {
-                spec.spectralCrest(blob.fvals()) => raw_features[frame_idx][feature_idx];
                 feature_idx++;
             }
 
@@ -328,6 +329,7 @@ public class LiSaCluster extends Chubgraph{
         // discards empty frames
         num_frames => raw_features.size;
 
+        // sends raw data to k-means function
         train(raw_features, num_steps, num_frames);
     }
 

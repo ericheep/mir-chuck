@@ -10,6 +10,7 @@ NanoKontrol n;
 //lc.mel(1);
 //lc.hfc(1);
 lc.mfcc(1);
+lc.crest(1);
 
 lc.fftSize(N);
 lc.numClusters(4);
