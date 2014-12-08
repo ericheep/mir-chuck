@@ -44,7 +44,7 @@ public class LiSaCluster extends Chubgraph{
 
     // feature vars
     int hfc_on, rms_on, cent_on, crest_on, subcent_on, spr_on, mel_on, mfcc_on;
-    int subcent_feats, mel_feats, mfcc_feats;
+    int subcent_feats, mel_feats, mfcc_feats, mfcc_min, mfcc_max;
 
     // transformation array in case of mel/bark features
     float mx[0][0];
