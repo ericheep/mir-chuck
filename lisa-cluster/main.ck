@@ -9,6 +9,7 @@ NanoKontrol n;
 //lc.spread(1);
 //lc.mel(1);
 //lc.hfc(1);
+lc.mfcc(1);
 lc.crest(1);
 
 lc.fftSize(N);

@@ -4,6 +4,7 @@
 // mir classes
 Machine.add(me.dir(-1) + "/Mel.ck");
 Machine.add(me.dir(-1) + "/Matrix.ck");
+Machine.add(me.dir(-1) + "/Sci.ck");
 Machine.add(me.dir(-1) + "/Spectral.ck");
 Machine.add(me.dir(-1) + "/Subband.ck");
 
