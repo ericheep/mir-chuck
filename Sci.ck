@@ -1,6 +1,6 @@
 // Sci.ck
 // Eric Heep
-
+// drey
 
 
 public class Sci {
@@ -60,18 +60,18 @@ public class Sci {
     // cosine similarity score
     fun float cosineDistance(float x[], float y[]) {
         float sum_x, sum_y, num;
-
+        
         for (int i; i < x.cap(); i++) {
             x[i] * x[i] +=> sum_x;
             y[i] * y[i] +=> sum_y;
         }
-
+        
         Math.sqrt(sum_x) => sum_x;
         Math.sqrt(sum_y) => sum_y;
-
+        
         sum_x * sum_y => float prod;
         
-
+        
         for (int i; i < y.cap(); i++) {
             x[i] * y[i] +=> num;
         }
@@ -108,32 +108,46 @@ public class Sci {
     // WIP
     // cosine similarity for beat spectrum
     fun float[][] cosineSimMat(float x[][], float y[][]) {
+        
         0 => float sum;
         float S[x[0].cap()][x[0].cap()];
         float temp_x[x.cap()];
-        float temp_y[y.cap()];
-     
+        float temp_y[x.cap()];
+        
         for (int i; i < x[0].cap(); i++) {
-            for (int j; j < x.cap(); j++) {
-                x[j][i] => temp_x[j];
-                y[j][i] => temp_y[j];
+            for (int k; k < x[0].cap(); k++) {
+                for (int j; j < x.cap(); j++) {
+                    x[j][i] => temp_x[j];
+                    y[j][k] => temp_y[j];
+                }
+                dot(temp_x, temp_y) / (veclen(temp_x) * veclen(temp_y)) => S[i][k];
             }
-            dot(temp_x, temp_y) / veclen(temp_x) * veclen(temp_y) => S[i][i];
-            //<<<S[1][1]>>>;
         }
-        //<<<temp_x[0],temp_y[0],S[0][0]>>>;
+        //<<<S[1][0], S[1][1], S[1][2], S[1][3], S[1][4]>>>;
+        //<<<"temp_x: ", temp_x[2], " temp_y: ", temp_y[2], " S: ", S[2][0]>>>;
+        //<<<"sim done">>>;
         return S;
     }
-    
+    //WIP
     // autocorrelation
     fun float[] autoCorr(float S[][]){
         float B[S.cap()];
-        for (1 => int k; k < S.cap(); k++){
-            for(int i; i<  S.cap(); i++){
-                S[i][i] * S[k][k] +=> B[k];
+        float temp_x[S.cap()];
+        float temp_y[S[0].cap()];
+        
+        for(int i; i < S[0].cap(); i++){
+            for(int j; j < S.cap(); j++){
+                S[j][i] => temp_x[j];
+                S[j][i] => temp_y[j];
             }
         }
-        //<<<B[0]>>>;
+        for (1 => int k; k < S.cap(); k++){
+            for(int i; i<  S.cap(); i++){
+                temp_x[i] * temp_y[k] +=> B[i];
+            }
+        }
+        
+        <<<temp_x[0], temp_y[1], B[0]>>>;
         return B;
     }
     
