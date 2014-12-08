@@ -222,8 +222,11 @@ public class LiSaCluster extends Chubgraph{
         while (play_active) {
             Math.random2(0, idx.cap() - 1) => int rand;
             if (idx[rand] == which) {
+                mic[0].rampUp(20::ms);
                 mic[0].playPos(rand * step_length);
-                step_length => now;
+                step_length - 20::ms => now;
+                mic[0].rampDown(20::ms);
+                20::ms => now;
             }
         }
         mic[0].play(0);
@@ -331,6 +334,7 @@ public class LiSaCluster extends Chubgraph{
         }
     }
 
+    // TODO: assert that there must be clusters working
     // records data and features while active, sends raw_features to train
     fun void recording() {
         // allocates buffer memory and sets corresponding maximium frame size
@@ -469,7 +473,7 @@ public class LiSaCluster extends Chubgraph{
             }
             div++;
         }
-        
+
         // in the case that the last step is too short to collect data
         // the last frame is discarded
         // otherwise, there'd be a cluster dedicated to no data
@@ -498,6 +502,10 @@ public class LiSaCluster extends Chubgraph{
         }
         else {
             num_clusters => play_clusters;
+        }
+
+        for (int i; i < idx.cap(); i++) {
+            <<< idx[i] >>>;
         }
     }
 }
