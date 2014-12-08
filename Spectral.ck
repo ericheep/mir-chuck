@@ -93,8 +93,8 @@ public class Spectral {
         for (int j; j < x.cap(); j++) {
             if (x[j] >= max) {
                 x[j] => max;
-                x[j] +=> sum;
             }
+            x[j] +=> sum;
         }
         return max / sum;
     }
