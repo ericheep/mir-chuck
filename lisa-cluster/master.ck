@@ -17,6 +17,9 @@ Machine.add(me.dir() + "/LiSaCluster.ck");
 // midi controller class
 Machine.add(me.dir() + "NanoKontrol.ck");
 
+// midi controller class
+Machine.add(me.dir() + "QuNeo.ck");
+
 // main program
 Machine.add(me.dir() + "/main.ck");
-// Machine.add(me.dir() + "/keyboard.ck");
+//Machine.add(me.dir() + "/keyboard.ck");
