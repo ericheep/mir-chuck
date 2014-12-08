@@ -14,7 +14,7 @@ public class LiSaCluster extends Chubgraph{
     Kmeans km;
 
     // sound chain
-    inlet => FFT fft =^ RMS r =>  blackhole;
+    inlet => FFT fft =^ RMS r => blackhole;
     LiSa mic[10];
     Pan2 pan[mic.cap()];
     for (int i; i < mic.cap(); i++) {
@@ -32,6 +32,7 @@ public class LiSaCluster extends Chubgraph{
 
     // control variables
     int num_clusters, play_clusters, rec_active, play_active, voice_active;
+    float voice_pan;
 
     // length of samples
     dur step_length;
@@ -258,7 +259,7 @@ public class LiSaCluster extends Chubgraph{
 
     fun void voice(int v) {
         // ensures model is finished training before playing
-        hop_time => now;
+        hop_time * 2 => now;
 
         // plays until play(0) is called
         if (v) {
@@ -271,19 +272,13 @@ public class LiSaCluster extends Chubgraph{
     }
 
     fun void voicing() {
-        // ensures model is finished training before playing
-        hop_time => now;
-        int check; 
-
-        1.0/(play_clusters + 1) => float p;
-        p => float add;
-        
+        // returns true after a pairing idx is found
+        voicePan(voice_pan);
         for (int i; i < play_clusters + 1; i++) {
-            int newVoice;
-            pan[i].pan(p * 2 - 1.0);
-            p + add => p;
             mic[i].play(i, 1);
         }
+
+        int check; 
         while (voice_active) {
             for (int i; i < play_clusters; i++) {
                 0 => check;
@@ -296,6 +291,47 @@ public class LiSaCluster extends Chubgraph{
                 }
             }
             step_length => now;
+        }
+    }
+    
+    //WIP
+    // rms ordering of steps belonging to one selectable cluster
+    fun void rmsPlayback() {
+        mic[0].play(1);
+        while (play_active) {
+            for(int i; i < idx.cap(); i++){
+                if (idx[i] == which) {
+                    mic[0].playPos(i * step_length);
+                    step_length => now;
+                }
+            }
+        }
+        mic[0].play(0);
+    }
+
+    // pans collection of voices 
+    fun void voicePan(float vp) {
+        vp => voice_pan;
+
+        // finds normal normal location of pans
+        1.0/(play_clusters + 1) => float p;
+        p => float add;
+
+        // ensures panning stays between -1.0 and 1.0
+        for (int i; i < play_clusters + 1; i++) {
+            p * 2 - 1.0 => float temp;
+            if (temp > 0.0 && temp <= 1.0) {
+                temp + voice_pan => temp;
+                if (temp > 1.0) 1.0 => temp;
+                if (temp < 0.0) 0.0 => temp;
+            }
+            if (temp < 0.0 && temp >= -1.0) {
+                temp - voice_pan => temp; 
+                if (temp < -1.0) -1.0 => temp;
+                if (temp > 0.0) 0.0 => temp;
+            }
+            pan[i].pan(temp);
+            p + add => p;
         }
     }
 
@@ -328,7 +364,7 @@ public class LiSaCluster extends Chubgraph{
         }
 
         // begins recording for number of clusters
-        for (int i; i < mic.cap(); i++) {
+        for (int i; i < num_clusters; i++) {
             mic[i].record(1);
         }
 
@@ -477,10 +513,6 @@ public class LiSaCluster extends Chubgraph{
         }
         else {
             num_clusters => play_clusters;
-        }
-
-        for (int i; i < idx.cap(); i++) {
-            <<< idx[i] >>>;
         }
     }
 }

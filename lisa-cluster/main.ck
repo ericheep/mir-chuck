@@ -16,10 +16,10 @@ lc.mfcc(1);
 //lc.crest(1);
 
 lc.fftSize(N);
-lc.numClusters(4);
+lc.numClusters(6);
 lc.stepLength(50::ms);
 
-int rec_latch, knob_pos;
+int rec_latch, knob_pos, knob_pan;
 
 fun void record() {
     if (n.bot[0] && rec_latch == 0) {
@@ -43,8 +43,16 @@ fun void whichCluster() {
     }
 }
 
+fun void voicePan() {
+    if (n.knob[1] != knob_pan) {
+        n.knob[1] => knob_pan;
+        lc.voicePan(knob_pan/127.0 * 2.0 - 1.0);
+    }
+}
+
 while (true) {
     record();
     whichCluster();
+    voicePan();
     10::ms => now;
 }
