@@ -22,7 +22,7 @@ public class Subband {
     }
 
     // subband centroids
-    fun float[] sub_cent(float X[], float filts[], int N, float sr) {
+    fun float[] subbandCentroid(float X[], float filts[], int N, float sr) {
         
         float prod[filts.cap() - 1];
         float sum[filts.cap() - 1];
