@@ -1,5 +1,5 @@
 // Spectral.ck
-// Eric Heep and Daniel Reyes
+// Eric Heep & Daniel Reyes
 
 public class Spectral {
 
@@ -56,7 +56,7 @@ public class Spectral {
         return Math.sqrt(num/den);
     }
 
-    // spectral flatness
+    // spectral flatness, currently not working
     fun float flatness(float X[]) {
         1.0 => float prod;
         0.0 => float sum;
@@ -88,8 +88,7 @@ public class Spectral {
     
     // spectral crest factor
     fun float spectralCrest(float x[]){
-        float max;
-        float sum;
+        float max, sum;
         for (int j; j < x.cap(); j++) {
             if (x[j] >= max) {
                 x[j] => max;

@@ -1,5 +1,5 @@
 // LiSaCluster.ck
-// Eric Heep
+// Eric Heep & Daniel Reyes
 
 public class LiSaCluster extends Chubgraph{
 
@@ -502,10 +502,6 @@ public class LiSaCluster extends Chubgraph{
         }
         else {
             num_clusters => play_clusters;
-        }
-
-        for (int i; i < idx.cap(); i++) {
-            <<< idx[i] >>>;
         }
     }
 }
