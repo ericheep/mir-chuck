@@ -46,7 +46,7 @@ public class LiSaCluster extends Chubgraph{
     // initialize
     fftSize(1024);
     stepLength(100::ms);
-    maxDuration(10::second);
+    maxDuration(15::second);
 
     // feature vars
     int hfc_on, rms_on, crest_on, cent_on, subcent_on, spr_on, mel_on, mfcc_on;
@@ -207,9 +207,9 @@ public class LiSaCluster extends Chubgraph{
         hop_time => now;
 
         // plays until play(0) is called
-        if (p) {
+        if (p==1) {
             1 => play_active;
-            spork ~ backwardsPlaying();
+            spork ~ playing();
         }
         if (p == 0) {
             0 => play_active;
@@ -231,7 +231,7 @@ public class LiSaCluster extends Chubgraph{
     
     // plays steps belonging to one selectable cluster linearly
     fun void linearPlaying() {
-        mic[0].play(1);
+        mic[0].play(2);
         while (play_active) {
             for(int i; i < idx.cap(); i++){
                 if(idx[i] == which) {
@@ -245,7 +245,7 @@ public class LiSaCluster extends Chubgraph{
     
     // plays steps belonging to one selectable cluster backwards
     fun void backwardsPlaying() {
-        mic[0].play(1);
+        mic[0].play(3);
         while (play_active) {
             for(idx.cap() => int i; i > 0; i--){
                 if(idx[i] == which) {
