@@ -1,6 +1,8 @@
-adc => LiSaCluster lc => dac;
+adc => LiSaCluster lc => blackhole;
+for (int i; i < lc.pan.cap(); i++) {
+    lc.pan[i] => dac;
+}
 NanoKontrol n;
-Quneo q;
 
 1024 => int N;
 
@@ -10,50 +12,39 @@ Quneo q;
 //lc.spread(1);
 //lc.mel(1);
 //lc.hfc(1);
-//lc.mfcc(1);
+lc.mfcc(1);
 //lc.crest(1);
 
 lc.fftSize(N);
-lc.numClusters(5);
+lc.numClusters(4);
 lc.stepLength(50::ms);
 
 int rec_latch, knob_pos;
 
-fun void whichFeatures(){
-    lc.subbandCentroids(q.pad[1]);
-    lc.rms(q.pad[2]);
-    lc.centroid(q.pad[3]);
-    lc.spread(q.pad[4]);
-    lc.mel(q.pad[5]);
-    lc.hfc(q.pad[6]);
-    lc.mfcc(q.pad[7]);
-    lc.crest(q.pad[8]);
-}
 fun void record() {
-    if (q.pad[0] && rec_latch == 0) {
-        lc.play(0);
+    if (n.bot[0] && rec_latch == 0) {
+        lc.voice(0);
         <<< "Recording", "" >>>;
         lc.record(1);
         1 => rec_latch;
     }
-    if (q.pad[0] == 0 && rec_latch == 1) {
+    if (n.bot[0] == 0 && rec_latch == 1) {
         <<< "Finished Recording", "" >>>;
         lc.record(0);
         0 => rec_latch;
-        lc.play(1);
+        lc.voice(1);
     }
 }
 
 fun void whichCluster() {
-    if (q.fader != knob_pos) {
-        q.fader => knob_pos;
+    if (n.knob[0] != knob_pos) {
+        n.knob[0] => knob_pos;
         lc.cluster(knob_pos/127.0);
     }
 }
 
 while (true) {
     record();
-    whichFeatures();
     whichCluster();
     10::ms => now;
 }
