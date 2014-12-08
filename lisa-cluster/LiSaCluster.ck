@@ -13,7 +13,7 @@ public class LiSaCluster extends Chubgraph{
     Kmeans km;
 
     // sound chain
-    inlet => FFT fft => RMS r =>  blackhole;
+    inlet => FFT fft =^ RMS r =>  blackhole;
     inlet => LiSa mic => outlet;
     UAnaBlob blob;
     UAnaBlob rms_blob;
@@ -42,7 +42,7 @@ public class LiSaCluster extends Chubgraph{
     maxDuration(10::second);
 
     // feature vars
-    int cent_on, spr_on, hfc_on, rms_on, mel_on, mfcc_on;
+    int cent_on, spr_on, hfc_on, rms_on, subcent_on, mel_on, mfcc_on;
     int mel_feats, mfcc_feats;
 
     // transformation array in case of mel/bark features
@@ -66,6 +66,11 @@ public class LiSaCluster extends Chubgraph{
     // toggles collection of root-mean square data
     fun void rms(int on) {
         on => rms_on;
+    }
+
+    // toggles collection of subband centroids
+    fun void subbandCentroids(int on) {
+        on => subcent_on;
     }
 
     // toggles collection of mel-filtered data
