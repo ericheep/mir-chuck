@@ -203,7 +203,7 @@ public class LiSaCluster extends Chubgraph{
         // plays until play(0) is called
         if (p) {
             1 => play_active;
-            spork ~ playing();
+            spork ~ rmsPlayback();
         }
         if (p == 0) {
             0 => play_active;
@@ -218,6 +218,21 @@ public class LiSaCluster extends Chubgraph{
             if (idx[rand] == which) {
                 mic.playPos(rand * step_length);
                 step_length => now;
+            }
+        }
+        mic.play(0);
+    }
+    
+    //WIP
+    // rms ordering of steps belonging to one selectable cluster
+    fun void rmsPlayback() {
+        mic.play(1);
+        while (play_active) {
+            for(int i; i < idx.cap(); i++){
+                if (idx[i] == which) {
+                    mic.playPos(i * step_length);
+                    step_length => now;
+                }
             }
         }
         mic.play(0);
