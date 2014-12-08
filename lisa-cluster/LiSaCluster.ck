@@ -42,7 +42,7 @@ public class LiSaCluster extends Chubgraph{
     maxDuration(10::second);
 
     // feature vars
-    int cent_on, spr_on, hfc_on, rms_on, subcent_on, mel_on, mfcc_on;
+    int hfc_on, rms_on, cent_on, subcent_on, spr_on, mel_on, mfcc_on;
     int subcent_feats, mel_feats, mfcc_feats;
 
     // transformation array in case of mel/bark features
@@ -50,14 +50,9 @@ public class LiSaCluster extends Chubgraph{
     // placeholder array for subband centroids 
     float subband_filts[0];
 
-    // toggles collection of spectral centroids
-    fun void centroid(int on) {
-        on => cent_on;
-    }
-
-    // toggles collection of spectral spreads
-    fun void spread(int on) {
-        on => spr_on;
+    // toggles collection of root-mean square data
+    fun void rms(int on) {
+        on => rms_on;
     }
 
     // toggles collection of high-frequency-content 
@@ -65,18 +60,23 @@ public class LiSaCluster extends Chubgraph{
         on => hfc_on;
     }
 
-    // toggles collection of root-mean square data
-    fun void rms(int on) {
-        on => rms_on;
+    // toggles collection of spectral centroids
+    fun void centroid(int on) {
+        on => cent_on;
     }
 
-    // toggles collection of subband centroids
+    // toggles collection of subband spectral centroids
     fun void subbandCentroids(int on) {
         on => subcent_on;
         if (on) {
             [0.0, 100.0, 500.0, 1000.0, 10000.0, 22050.0] @=> subband_filts; 
             subband_filts.cap() - 1 => subcent_feats;
         }
+    }
+
+    // toggles collection of spectral spreads
+    fun void spread(int on) {
+        on => spr_on;
     }
 
     // optional method to implement a custom set of 
@@ -111,10 +111,10 @@ public class LiSaCluster extends Chubgraph{
     // internal function that recalls the number enabled features
     fun int numFeatures() {
         int num;
+        rms_on +=> num;
+        hfc_on +=> num;
         cent_on +=> num;
         spr_on +=> num;
-        hfc_on +=> num;
-        rms_on +=> num;
         subcent_feats +=> num;
         mel_feats +=> num;
         mfcc_feats +=> num;
@@ -229,6 +229,11 @@ public class LiSaCluster extends Chubgraph{
                 feature_idx++;
             }
 
+            if (hfc_on) {
+                spec.hfc(blob.fvals()) => raw_features[frame_idx][feature_idx];
+                feature_idx++;
+            }
+
             if (cent_on) {
                 spec.centroid(blob.fvals(), sr, N) => raw_features[frame_idx][feature_idx];
                 feature_idx++;
@@ -253,10 +258,6 @@ public class LiSaCluster extends Chubgraph{
                     mel_filts[i] => raw_features[frame_idx][feature_idx];
                     feature_idx++;
                 }
-            }
-            if (hfc_on) {
-                spec.hfc(blob.fvals(), N) => raw_features[frame_idx][feature_idx];
-                feature_idx++;
             }
 
             frame_idx++;
