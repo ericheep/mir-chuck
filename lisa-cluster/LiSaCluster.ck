@@ -79,7 +79,7 @@ public class LiSaCluster extends Chubgraph{
         }
     }
 
-    // method to implement a custom set of 
+    // optional method to implement a custom set of 
     // frequency ranges for subband centroids
     fun void subbandCentroids(float bnk[]) {
         1 => subcent_on;
@@ -98,7 +98,7 @@ public class LiSaCluster extends Chubgraph{
         }
     }
 
-    // optional parameters for matrix transformation
+    // optional method for matrix transformation
     // types include 'mel', 'bark', and 'constantQ'
     fun void mel(int filts, float width, string type) {
         1 => mel_on;
