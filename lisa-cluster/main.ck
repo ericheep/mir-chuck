@@ -2,11 +2,11 @@ LiSaCluster lc[3];
 
 for (int i; i < lc.cap(); i++) {
     adc => lc[i] => blackhole;
+    lc[i].fftSize(1024);
+    lc[i].numClusters(2 + i);
+    lc[i].stepLength(50::ms);
     for (int j; j < lc[i].pan.cap(); j++) {
         lc[i].pan[j] => dac;
-        lc[i].fftSize(1024);
-        lc[i].numClusters(2 + i);
-        lc[i].stepLength(50::ms);
     }
 }
 
@@ -17,16 +17,16 @@ int rec_latch, knob_pos, knob_pan;
 
 fun void record() {
     if (n.bot[0] && rec_latch == 0) {
-        lc[0].voice(0);
         <<< "Recording", "" >>>;
+        lc[0].voice(0);
         lc[0].record(1);
         1 => rec_latch;
     }
     if (n.bot[0] == 0 && rec_latch == 1) {
         <<< "Finished Recording", "" >>>;
         lc[0].record(0);
-        0 => rec_latch;
         lc[0].voice(1);
+        0 => rec_latch;
     }
 }
 
