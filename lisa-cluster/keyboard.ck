@@ -31,7 +31,6 @@ while (true) {
                 if (inc < lc.num_clusters) {  
                     inc++;
                     lc.cluster((inc * 0.999)/lc.num_clusters);
-                    <<< "!", (inc * 0.999)/lc.num_clusters >>>;
                 }
             }
             if (msg.ascii == 50) {

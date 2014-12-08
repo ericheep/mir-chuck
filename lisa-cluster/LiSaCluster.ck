@@ -6,7 +6,7 @@ public class LiSaCluster extends Chubgraph{
     // mir classes
     Mel m;
     Matrix mat;
-    Subband bnk;
+    Subband sub;
     Spectral spec;
 
     // k-means class
@@ -43,10 +43,12 @@ public class LiSaCluster extends Chubgraph{
 
     // feature vars
     int cent_on, spr_on, hfc_on, rms_on, subcent_on, mel_on, mfcc_on;
-    int mel_feats, mfcc_feats;
+    int subcent_feats, mel_feats, mfcc_feats;
 
     // transformation array in case of mel/bark features
     float mx[0][0];
+
+    float subband_filts[];
 
     // toggles collection of spectral centroids
     fun void centroid(int on) {
@@ -71,6 +73,18 @@ public class LiSaCluster extends Chubgraph{
     // toggles collection of subband centroids
     fun void subbandCentroids(int on) {
         on => subcent_on;
+        if (on) {
+            [0.0, 100.0, 500.0, 1000.0, 10000.0, 22050.0] @=> subband_filts; 
+            subband_filts.cap() - 1 => subcent_feats;
+        }
+    }
+
+    // method to implement a custom set of 
+    // frequency ranges for subband centroids
+    fun void subbandCentroids(float bnk[]) {
+        1 => subcent_on;
+        bnk.cap() - 1 => subcent_feats;
+        bnk @=> subband_filts;
     }
 
     // toggles collection of mel-filtered data
@@ -101,6 +115,7 @@ public class LiSaCluster extends Chubgraph{
         spr_on +=> num;
         hfc_on +=> num;
         rms_on +=> num;
+        subcent_feats +=> num;
         mel_feats +=> num;
         mfcc_feats +=> num;
         return num;
@@ -123,8 +138,10 @@ public class LiSaCluster extends Chubgraph{
     // sets which cluster to playback
     fun void cluster(float c) {
         if (c != 1.0) {
-            (c * num_clusters) $ int => which;
-            <<< which >>>;
+            if ((c * num_clusters) $ int != which) {
+                (c * num_clusters) $ int => which;
+                <<< which >>>;
+            }
         }
     }
 
@@ -216,6 +233,14 @@ public class LiSaCluster extends Chubgraph{
                 feature_idx++;
             }
 
+            if (subcent_on) {
+                sub.subbandCentroid(blob.fvals(), subband_filts, N, sr) @=> float sub_cents[];
+                for (int i; i < sub_cents.cap(); i++) {
+                    sub_cents[i] => raw_features[frame_idx][feature_idx];
+                    feature_idx++;
+                }
+            }
+
             if (spr_on) {
                 spec.spread(blob.fvals(), sr, N) => raw_features[frame_idx][feature_idx];
                 feature_idx++;
@@ -290,8 +315,5 @@ public class LiSaCluster extends Chubgraph{
         // trains, then predicts using the training data to return index array
         km.train(training) @=> float model[][];
         km.predict(training, model) @=> idx;
-        for (int i; i < idx.cap(); i++) {
-            <<< idx[i] >>>;
-        }
     }
 }
