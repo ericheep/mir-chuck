@@ -15,7 +15,12 @@ public class LiSaCluster extends Chubgraph{
 
     // sound chain
     inlet => FFT fft =^ RMS r =>  blackhole;
-    inlet => LiSa mic => outlet;
+    LiSa mic[10];
+    Pan2 pan[mic.cap()];
+    for (int i; i < mic.cap(); i++) {
+        inlet => mic[i] => pan[i] => outlet;
+    }
+
     UAnaBlob blob;
     UAnaBlob rms_blob;
 
@@ -26,7 +31,7 @@ public class LiSaCluster extends Chubgraph{
     second/samp => float sr;
 
     // control variables
-    int num_clusters, rec_active, play_active;
+    int num_clusters, play_clusters, rec_active, play_active, voice_active;
 
     // length of samples
     dur step_length;
@@ -173,8 +178,8 @@ public class LiSaCluster extends Chubgraph{
     // sets which cluster to playback
     fun void cluster(float c) {
         if (c != 1.0) {
-            if ((c * num_clusters) $ int != which) {
-                (c * num_clusters) $ int => which;
+            if ((c * play_clusters) $ int != which) {
+                (c * play_clusters) $ int => which;
                 <<< which >>>;
             }
         }
@@ -212,15 +217,58 @@ public class LiSaCluster extends Chubgraph{
 
     // plays random steps belonging to one selectable cluster
     fun void playing() {
-        mic.play(1);
+        mic[0].play(1);
         while (play_active) {
             Math.random2(0, idx.cap() - 1) => int rand;
             if (idx[rand] == which) {
-                mic.playPos(rand * step_length);
+                mic[0].playPos(rand * step_length);
                 step_length => now;
             }
         }
-        mic.play(0);
+        mic[0].play(0);
+    }
+
+    fun void voice(int v) {
+        // ensures model is finished training before playing
+        hop_time => now;
+
+        // plays until play(0) is called
+        if (v) {
+            1 => voice_active;
+            spork ~ voicing();
+        }
+        if (v == 0) {
+            0 => voice_active;
+        }
+    }
+
+    fun void voicing() {
+        // ensures model is finished training before playing
+        hop_time => now;
+        int check; 
+
+        1.0/(play_clusters + 1) => float p;
+        p => float add;
+        
+        for (int i; i < play_clusters + 1; i++) {
+            int newVoice;
+            pan[i].pan(p * 2 - 1.0);
+            p + add => p;
+            mic[i].play(i, 1);
+        }
+        while (voice_active) {
+            for (int i; i < play_clusters; i++) {
+                0 => check;
+                while (check == 0) {
+                    Math.random2(0, idx.cap() - 1) => int rand;
+                    if (idx[rand] == i) {
+                        mic[i].playPos(i, rand * step_length);
+                        1 => check;
+                    }
+                }
+            }
+            step_length => now;
+        }
     }
 
     // records and then trains
@@ -237,7 +285,6 @@ public class LiSaCluster extends Chubgraph{
     // records data and features while active, sends raw_features to train
     fun void recording() {
         // allocates buffer memory and sets corresponding maximium frame size
-        mic.duration(max_duration);
         (max_duration/hop_time) $ int => int max_frames;
 
         // retreives number of features 
@@ -247,8 +294,16 @@ public class LiSaCluster extends Chubgraph{
         float raw_features[max_frames][num_features];
         int frame_idx, feature_idx;
 
-        // starts recording while gathering features
-        mic.record(1);
+        // clears out buffers
+        for (int i; i < mic.cap(); i++) {
+            mic[i].duration(max_duration);
+        }
+
+        // begins recording for number of clusters
+        for (int i; i < mic.cap(); i++) {
+            mic[i].record(1);
+        }
+
         now => time past;
         while (rec_active) {
             // 50% hop size
@@ -319,7 +374,11 @@ public class LiSaCluster extends Chubgraph{
             frame_idx++;
             0 => feature_idx;
         }
-        mic.record(0);
+
+        // ends recording
+        for (int i; i < num_clusters; i++) {
+            mic[i].record(0);
+        }
 
         // segmenting variables
         now - past => dur rec_time;
@@ -375,5 +434,25 @@ public class LiSaCluster extends Chubgraph{
         // trains, then predicts using the training data to return index array
         km.train(training) @=> float model[][];
         km.predict(training, model) @=> idx;
+
+        // finds the returned number of clusters
+        idx[0] => int max; 
+        for (int i; i < idx.cap(); i++) {
+            if (idx[i] > max) {
+                idx[i] => max; 
+            }
+        }
+
+        // checks for number of returned clusters
+        if (max != num_clusters - 1) {
+            max + 1 => play_clusters; 
+        }
+        else {
+            num_clusters => play_clusters;
+        }
+
+        for (int i; i < idx.cap(); i++) {
+            <<< idx[i] >>>;
+        }
     }
 }

@@ -1,4 +1,7 @@
-adc => LiSaCluster lc => dac;
+adc => LiSaCluster lc => blackhole;
+for (int i; i < lc.pan.cap(); i++) {
+    lc.pan[i] => dac;
+}
 NanoKontrol n;
 
 1024 => int N;
@@ -10,7 +13,7 @@ NanoKontrol n;
 //lc.mel(1);
 //lc.hfc(1);
 lc.mfcc(1);
-lc.crest(1);
+//lc.crest(1);
 
 lc.fftSize(N);
 lc.numClusters(4);
@@ -20,7 +23,7 @@ int rec_latch, knob_pos;
 
 fun void record() {
     if (n.bot[0] && rec_latch == 0) {
-        lc.play(0);
+        lc.voice(0);
         <<< "Recording", "" >>>;
         lc.record(1);
         1 => rec_latch;
@@ -29,7 +32,7 @@ fun void record() {
         <<< "Finished Recording", "" >>>;
         lc.record(0);
         0 => rec_latch;
-        lc.play(1);
+        lc.voice(1);
     }
 }
 
