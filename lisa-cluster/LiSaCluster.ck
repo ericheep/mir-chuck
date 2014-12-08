@@ -47,8 +47,8 @@ public class LiSaCluster extends Chubgraph{
 
     // transformation array in case of mel/bark features
     float mx[0][0];
-
-    float subband_filts[];
+    // placeholder array for subband centroids 
+    float subband_filts[0];
 
     // toggles collection of spectral centroids
     fun void centroid(int on) {
@@ -175,6 +175,7 @@ public class LiSaCluster extends Chubgraph{
         }
     }
 
+    // plays random steps belonging to one selectable cluster
     fun void playing() {
         mic.play(1);
         while (play_active) {
@@ -274,6 +275,7 @@ public class LiSaCluster extends Chubgraph{
         train(raw_features, num_steps, num_frames);
     }
 
+    // trains the k-means model using means of raw features over the audio steps
     fun void train(float raw[][], int steps, int frames) {
         // incrementers for mean calcuation  
         int div, inc;
