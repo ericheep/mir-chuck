@@ -5,6 +5,7 @@ public class LiSaCluster extends Chubgraph{
 
     // mir classes
     Mel m;
+    Sci sci;
     Matrix mat;
     Subband sub;
     Spectral spec;
@@ -43,10 +44,11 @@ public class LiSaCluster extends Chubgraph{
 
     // feature vars
     int hfc_on, rms_on, cent_on, subcent_on, spr_on, mel_on, mfcc_on;
-    int subcent_feats, mel_feats, mfcc_feats;
+    int subcent_feats, mel_feats, mfcc_feats, mfcc_min, mfcc_max;
 
     // transformation array in case of mel/bark features
     float mx[0][0];
+    float mfcc_mx[0][0];
     // placeholder array for subband centroids 
     float subband_filts[0];
 
@@ -108,7 +110,34 @@ public class LiSaCluster extends Chubgraph{
         mat.cutMat(mx, 0, N/2) @=> mx;
     }
 
-    // internal function that recalls the number enabled features
+    // toggles collection of mfccs
+    fun void mfcc(int on) {
+        on => mfcc_on;
+        if (on) {
+            1 => mfcc_min; 
+            12 => mfcc_max;
+            mfcc_max - mfcc_min => mfcc_feats;
+
+            m.calc(N, sr, 24, 1.0, "mel") @=> mfcc_mx; 
+            mat.transpose(mfcc_mx) @=> mfcc_mx;
+            mat.cutMat(mfcc_mx, 0, N/2) @=> mfcc_mx;
+        }
+    }
+
+    // optional method to specifiy mel filters
+    // and min and max of mfcc array
+    fun void mfcc(int filts, int min, int max) {
+        1 => mel_on;
+        min => mfcc_min; 
+        max => mfcc_max;
+        mfcc_max - mfcc_min => mfcc_feats;
+
+        m.calc(N, sr, filts, 1.0, "mel") @=> mfcc_mx; 
+        mat.transpose(mx) @=> mfcc_mx;
+        mat.cutMat(mx, 0, N/2) @=> mfcc_mx;
+    }
+
+    // internal function that recalls the number of enabled features
     fun int numFeatures() {
         int num;
         rms_on +=> num;
@@ -260,6 +289,21 @@ public class LiSaCluster extends Chubgraph{
                 }
             }
 
+            if (mfcc_on) {
+                mat.dot(blob.fvals(), mfcc_mx) @=> float mfccs[];
+
+                // mfcc steps
+                mat.log10(mfccs) @=> mfccs;
+                sci.dct(mfccs) @=> mfccs;
+
+                // discarding upper half of mfcc
+                mat.cut(mfccs, mfcc_min, mfcc_max) @=> mfccs;
+                for (int i; i < mfccs.cap(); i++) {
+                    mfccs[i] => raw_features[frame_idx][feature_idx];
+                    feature_idx++;
+                }
+            }
+
             frame_idx++;
             0 => feature_idx;
         }
@@ -305,10 +349,6 @@ public class LiSaCluster extends Chubgraph{
             div++;
         }
         
-        for (int i; i < steps; i++) {
-            training[i][0];
-        }
-
         // in the case that the last step is too short to collect data
         // the last frame is discarded
         // otherwise, there'd be a cluster dedicated to no data
