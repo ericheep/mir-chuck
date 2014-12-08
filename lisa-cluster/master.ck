@@ -21,5 +21,5 @@ Machine.add(me.dir() + "NanoKontrol.ck");
 Machine.add(me.dir() + "QuNeo.ck");
 
 // main program
-Machine.add(me.dir() + "/main.ck");
+Machine.add(me.dir() + "/mainQuneo.ck");
 //Machine.add(me.dir() + "/keyboard.ck");
