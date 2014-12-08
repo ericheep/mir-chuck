@@ -56,7 +56,7 @@ public class Spectral {
         return Math.sqrt(num/den);
     }
 
-    //spectral flatness
+    // spectral flatness
     fun float flatness(float X[]) {
         1.0 => float prod;
         0.0 => float sum;
@@ -76,11 +76,12 @@ public class Spectral {
         <<< num/den >>>;
         return num/den;
     }
-    fun float hfc(float X[], int N) {
+
+    // high-frequency content 
+    fun float hfc(float X[]) {
         float out;
-        N/2 => int win;
-        for(int k; k < win; k++){
-            Std.fabs(X[k]) * k +=> out;
+        for(int k; k < X.cap(); k++){
+            X[k] * k +=> out;
         }
         return out;
     }
