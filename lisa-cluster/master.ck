@@ -17,4 +17,5 @@ Machine.add(me.dir() + "/LiSaCluster.ck");
 Machine.add(me.dir() + "NanoKontrol.ck");
 
 // main program
-Machine.add(me.dir() + "/main.ck");
+// Machine.add(me.dir() + "/main.ck");
+Machine.add(me.dir() + "/keyboard.ck");
