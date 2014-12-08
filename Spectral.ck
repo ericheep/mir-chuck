@@ -85,4 +85,17 @@ public class Spectral {
         }
         return out;
     }
+    
+    // spectral crest factor
+    fun float spectralCrest(float x[]){
+        float max;
+        float sum;
+        for (int j; j < x.cap(); j++) {
+            if (x[j] >= max) {
+                x[j] => max;
+                x[j] +=> sum;
+            }
+        }
+        return max / sum;
+    }
 }
