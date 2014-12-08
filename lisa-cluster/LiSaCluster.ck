@@ -209,7 +209,7 @@ public class LiSaCluster extends Chubgraph{
         // plays until play(0) is called
         if (p) {
             1 => play_active;
-            spork ~ backwardsPlaying();
+            spork ~ playing();
         }
         if (p == 0) {
             0 => play_active;
@@ -331,6 +331,7 @@ public class LiSaCluster extends Chubgraph{
         }
     }
 
+    // TODO: assert that there must be clusters working
     // records data and features while active, sends raw_features to train
     fun void recording() {
         // allocates buffer memory and sets corresponding maximium frame size
