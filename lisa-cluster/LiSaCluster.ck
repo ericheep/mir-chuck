@@ -208,7 +208,7 @@ public class LiSaCluster extends Chubgraph{
         // plays until play(0) is called
         if (p) {
             1 => play_active;
-            spork ~ rmsPlayback();
+            spork ~ playing();
         }
         if (p == 0) {
             0 => play_active;
@@ -223,6 +223,34 @@ public class LiSaCluster extends Chubgraph{
             if (idx[rand] == which) {
                 mic[0].playPos(rand * step_length);
                 step_length => now;
+            }
+        }
+        mic[0].play(0);
+    }
+    
+    // plays steps belonging to one selectable cluster linearly
+    fun void linearPlaying() {
+        mic[0].play(1);
+        while (play_active) {
+            for(int i; i < idx.cap(); i++){
+                if(idx[i] == which) {
+                    mic[0].playPos(i * step_length);
+                    step_length => now;
+                }
+            }
+        }
+        mic[0].play(0);
+    }
+    
+    // plays steps belonging to one selectable cluster backwards
+    fun void backwardsPlaying() {
+        mic[0].play(1);
+        while (play_active) {
+            for(idx.cap() => int i; i > 0; i--){
+                if(idx[i] == which) {
+                    mic[0].playPos(i * step_length);
+                    step_length => now;
+                }
             }
         }
         mic[0].play(0);
@@ -269,21 +297,6 @@ public class LiSaCluster extends Chubgraph{
             }
             step_length => now;
         }
-    }
-    
-    //WIP
-    // rms ordering of steps belonging to one selectable cluster
-    fun void rmsPlayback() {
-        mic.play(1);
-        while (play_active) {
-            for(int i; i < idx.cap(); i++){
-                if (idx[i] == which) {
-                    mic.playPos(i * step_length);
-                    step_length => now;
-                }
-            }
-        }
-        mic.play(0);
     }
 
     // records and then trains
