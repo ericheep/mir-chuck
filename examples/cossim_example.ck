@@ -88,6 +88,7 @@ while (true) {
 
     //vis.data(X, "/data");
     
+    
     stft.stft(blob.fvals(), data) @=> data;
     sci.cosineSimMat(data, data) @=> S;
     sci.autoCorr(S) @=> float auto[];

@@ -53,6 +53,11 @@ float model[0][0];
 
 spork ~ keyboard();
 analysis();
+[0,2,5,1,3,6] @=> float x[];
+
+spec.spectralCrest(x) => float max;
+
+<<<max>>>;
 
 // records while '~' is held down
 // only audio above 40db will be recorded into training model 
@@ -120,16 +125,16 @@ fun void analysis() {
         Std.rmstodb(rms_blob.fval(0)) => db;
 
         // records data and then trains, while ~ is held down
-        recData([hfc], db);
+        recData([cent,hfc], db);
         
         // shows features pre-training
         if (rec_stft == 0 && test_ready == 0) {
-            <<< "Spread:", spr, "Centroid:", cent >>>;
+            //<<< "Spread:", spr, "Centroid:", cent >>>;
         }
 
         // shows cluster 
         if (rec_stft == 0 && test_ready) {
-            <<< "Cluster:", km.singlePredict([spr, cent], model), "Spread:", spr, "Centroid:", cent >>>;
+            //<<< "Cluster:", km.singlePredict([spr, cent], model), "Spread:", spr, "Centroid:", cent >>>;
         }
     }
 }
