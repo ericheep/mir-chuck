@@ -269,16 +269,16 @@ public class LiSaCluster extends Chubgraph{
     //WIP
     // rms ordering of steps belonging to one selectable cluster
     fun void rmsPlayback() {
-        mic.play(1);
+        mic[0].play(1);
         while (play_active) {
             for(int i; i < idx.cap(); i++){
                 if (idx[i] == which) {
-                    mic.playPos(i * step_length);
+                    mic[0].playPos(i * step_length);
                     step_length => now;
                 }
             }
         }
-        mic.play(0);
+        mic[0].play(0);
     }
 
     // pans collection of voices 
