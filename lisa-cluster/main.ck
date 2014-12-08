@@ -5,9 +5,10 @@ NanoKontrol n;
 
 lc.subbandCentroids(1);
 lc.rms(1);
-lc.centroid(1);
-lc.spread(1);
-lc.mel(1);
+//lc.centroid(1);
+//lc.spread(1);
+//lc.mel(1);
+lc.hfc(1);
 
 lc.fftSize(N);
 lc.numClusters(4);
