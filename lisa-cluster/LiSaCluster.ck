@@ -74,17 +74,17 @@ public class LiSaCluster extends Chubgraph{
         }
     }
 
-    // toggles collection of spectral spreads
-    fun void spread(int on) {
-        on => spr_on;
-    }
-
     // optional method to implement a custom set of 
     // frequency ranges for subband centroids
     fun void subbandCentroids(float bnk[]) {
         1 => subcent_on;
         bnk.cap() - 1 => subcent_feats;
         bnk @=> subband_filts;
+    }
+
+    // toggles collection of spectral spreads
+    fun void spread(int on) {
+        on => spr_on;
     }
 
     // toggles collection of mel-filtered data
