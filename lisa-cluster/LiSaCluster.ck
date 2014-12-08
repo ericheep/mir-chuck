@@ -43,8 +43,8 @@ public class LiSaCluster extends Chubgraph{
     maxDuration(10::second);
 
     // feature vars
-    int hfc_on, rms_on, cent_on, subcent_on, spr_on, mel_on, mfcc_on;
-    int subcent_feats, mel_feats, mfcc_feats, mfcc_min, mfcc_max;
+    int hfc_on, rms_on, cent_on, crest_on, subcent_on, spr_on, mel_on, mfcc_on;
+    int subcent_feats, mel_feats, mfcc_feats;
 
     // transformation array in case of mel/bark features
     float mx[0][0];
@@ -60,6 +60,11 @@ public class LiSaCluster extends Chubgraph{
     // toggles collection of high-frequency-content 
     fun void hfc(int on) {
         on => hfc_on;
+    }
+    
+    // toggles collection of spectral crest factor
+    fun void crest(int on) {
+        on => crest_on;
     }
 
     // toggles collection of spectral centroids
@@ -143,6 +148,7 @@ public class LiSaCluster extends Chubgraph{
         rms_on +=> num;
         hfc_on +=> num;
         cent_on +=> num;
+        crest_on +=> num;
         spr_on +=> num;
         subcent_feats +=> num;
         mel_feats +=> num;
@@ -265,6 +271,11 @@ public class LiSaCluster extends Chubgraph{
 
             if (cent_on) {
                 spec.centroid(blob.fvals(), sr, N) => raw_features[frame_idx][feature_idx];
+                feature_idx++;
+            }
+            
+            if (crest_on) {
+                spec.spectralCrest(blob.fvals()) => raw_features[frame_idx][feature_idx];
                 feature_idx++;
             }
 
