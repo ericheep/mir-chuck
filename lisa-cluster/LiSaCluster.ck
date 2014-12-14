@@ -260,6 +260,7 @@ public class LiSaCluster extends Chubgraph{
         mic[0].play(0);
     }
 
+    // method for multiple voice output
     fun void voice(int v) {
         // ensures model is finished training before playing
         hop_time * 2 => now;
