@@ -15,10 +15,6 @@ float hght;
 float[][] mov_spectra;
 float[][] plot;
 
-boolean sketchFullScreen() {
-  return true;
-}
-
 void oscEvent(OscMessage msg) {
   if (msg.checkAddrPattern("/data") == true) {
     for (int i = 0; i < rows; i++) {
@@ -43,9 +39,10 @@ void mov_specgram() {
 }
 
 void setup() {
+  fullScreen();
   noStroke();
   frameRate(60);
-  size(displayWidth, displayHeight);
+  //size(displayWidth, displayHeight);
   oscP5 = new OscP5(this, 12001);
   myRemoteLocation = new NetAddress("127.0.0.1", 12000);
   hght = height/float(filts);
@@ -60,4 +57,3 @@ void setup() {
 void draw() {
   mov_specgram();
 }
-
