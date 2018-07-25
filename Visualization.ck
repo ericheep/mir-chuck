@@ -8,10 +8,19 @@ public class Visualization {
 
     // sends RMS values of the input array to Processing
     fun void data(float x[], string addr) {
-        osc.start(addr);
         for (int i; i < x.cap(); i++) {
+            osc.start(addr);
+            osc.add(i);
             osc.add(x[i]);
+            osc.send();
+            10::samp => now;
         }
+        redraw();
+    }
+
+    // sends RMS values of the input array to Processing
+    fun void redraw() {
+        osc.start("/redraw");
         osc.send();
     }
 
@@ -26,4 +35,4 @@ public class Visualization {
             win => now;
         }
     }
-} 
+}

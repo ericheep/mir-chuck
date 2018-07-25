@@ -64,8 +64,9 @@ public class Mel {
         // cent transformation
         if (filter == "cent") {
             if (n_filts == 0) {
-                //  3300 cents between 55.0 hz (low A) to 880.0hz (high A)
-                3300 => n_filts;
+                // 3300 cents between 55.0 hz (low A) to 880.0hz (high A)
+                // broken up into whole steps
+                165 => n_filts;
             }
             n_filts + 2 => bin_frqs.size;
             hz2cent(110.0) => float minpitch;
