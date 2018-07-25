@@ -2,7 +2,7 @@
 // Eric Heep
 
 public class Mel {
-  
+
     // main method to call in operation
     fun float[][] calc(int fft_size, float sr, string filter) {
         return calc(fft_size, sr, 0, 1.0, filter);
@@ -61,14 +61,29 @@ public class Mel {
             }
         }
 
+        // cent transformation
+        if (filter == "cent") {
+            if (n_filts == 0) {
+                //  3300 cents between 55.0 hz (low A) to 880.0hz (high A)
+                3300 => n_filts;
+            }
+            n_filts + 2 => bin_frqs.size;
+            hz2cent(110.0) => float minpitch;
+            hz2cent(880.0) => float maxpitch;
+            for (int i; i < bin_frqs.cap(); i++) {
+                pitch2hz(minpitch + i/(bin_frqs.cap() - 1.0) * (maxpitch - minpitch)) => bin_frqs[i];
+            }
+        }
+
+
         // weight matrix
         float w[n_filts][fft_size];
 
         for (int i; i < n_filts; i++) {
             float fs[3];
-            
+
             for (int j; j < 3; j++) {
-                bin_frqs[i + j] => fs[j]; 
+                bin_frqs[i + j] => fs[j];
             }
             for (int j; j < 3; j++) {
                 width * (fs[j]- fs[1]) + fs[1] => fs[j];
@@ -79,7 +94,7 @@ public class Mel {
             float hi[fft_frqs.cap()];
 
             for (int j; j < fft_frqs.cap(); j++) {
-                (fft_frqs[j] - fs[0])/(fs[1] - fs[0]) => lo[j]; 
+                (fft_frqs[j] - fs[0])/(fs[1] - fs[0]) => lo[j];
                 (fs[2] - fft_frqs[j])/(fs[2] - fs[1]) => hi[j];
             }
             for (int j; j < fft_frqs.cap(); j++) {
@@ -88,6 +103,16 @@ public class Mel {
         }
 
         return w;
+    }
+
+    // converts hz to cent scale
+    fun float hz2cent(float frq) {
+        return 1200 * Math.log2(frq/440) + 5700;
+    }
+
+    // converts cent to hz
+    fun float cent2hz(float cent) {
+        return Math.pow(2, (cent - 5700)/1200) * 440;
     }
 
     // converts hz to q scale
@@ -117,7 +142,7 @@ public class Mel {
 
     // converts bark scale to hz
     fun float bark2hz(float bark) {
-        return (-19600 * bark - 9996)/(10 * bark - 263); 
+        return (-19600 * bark - 9996)/(10 * bark - 263);
     }
 
     // maximum value, utility function
