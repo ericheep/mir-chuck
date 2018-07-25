@@ -69,10 +69,10 @@ public class Mel {
                 165 => n_filts;
             }
             n_filts + 2 => bin_frqs.size;
-            hz2cent(110.0) => float minpitch;
-            hz2cent(880.0) => float maxpitch;
+            hz2cent(110.0) => float minCent;
+            hz2cent(880.0) => float maxCent;
             for (int i; i < bin_frqs.cap(); i++) {
-                pitch2hz(minpitch + i/(bin_frqs.cap() - 1.0) * (maxpitch - minpitch)) => bin_frqs[i];
+                cent2hz(minCent + i/(bin_frqs.cap() - 1.0) * (maxCent - minCent)) => bin_frqs[i];
             }
         }
 
