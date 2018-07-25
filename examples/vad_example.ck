@@ -1,4 +1,4 @@
-// cent_example.ck
+// vad_example.ck
 // Eric Heep
 
 // classes
@@ -22,13 +22,15 @@ Windowing.hamming(N) => fft.window;
 UAnaBlob blob;
 
 // calculates transformation matrix
-mel.calc(N, sr, "cent") @=> float mx[][];
+mel.calc(4098, sr, "constantQ", 36 * 4, 1.0, 110.0, 1045.5025) @=> float mx[][];
+/* mel.calc(N, sr, "cent") @=> float mx[][]; */
+
 mat.transpose(mx) @=> mx;
 
 // cuts off unnecessary half of transformation weights
 mat.cutMat(mx, 0, win/2) @=> mx;
 
-2 => int LAGS;
+1 => int LAGS;
 float laggedX[LAGS][mx[0].size()];
 
 // main program
@@ -48,8 +50,9 @@ while (true) {
     X @=> laggedX[0];
 
     if (laggedX.size() > 0) {
-        c.crossCorr(X, laggedX[LAGS - 1], 3) @=> float series[];
-        <<< series[0], series[1], series[2], series[3], series[4], series[5] >>>;
+        c.crossCorr(X, laggedX[LAGS - 1], 2) @=> float series[];
+        /* <<< series[0], series[1], series[2], series[3], series[4], series[5] >>>; */
+        <<< sum(series) >>>;
     }
 
     /* vis.data(mat.rmstodb(X), "/data"); */
