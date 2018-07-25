@@ -12,6 +12,7 @@ Machine.add(me.dir(-1) + "/Spectral.ck");
 Machine.add(me.dir(-1) + "/Subband.ck");
 Machine.add(me.dir(-1) + "/Tonality.ck");
 Machine.add(me.dir(-1) + "/Visualization.ck");
+Machine.add(me.dir(-1) + "/CrossCorr.ck");
 
 // main program
 //Machine.add(me.dir() + "/kmeans_example.ck");

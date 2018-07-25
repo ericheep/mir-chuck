@@ -5,6 +5,7 @@
 Mel mel;
 Matrix mat;
 Visualization vis;
+CrossCorr c;
 
 // sound chain
 adc => FFT fft => blackhole;
@@ -23,6 +24,8 @@ mat.transpose(mx) @=> mx;
 // cuts off unnecessary half of transformation weights
 mat.cutMat(mx, 0, win/2) @=> mx;
 
+float laggedX[0];
+
 // main program
 while (true) {
     win::samp => now;
@@ -33,8 +36,12 @@ while (true) {
     // keystrength cross correlation
     mat.dot(blob.fvals(), mx) @=> float X[];
 
-    // rms scaling
-    mat.rmstodb(blob.fvals()) @=> X;
+    if (laggedX.size() > 0) {
+        c.crossCorr(X, laggedX, 3) @=> float series[];
+        <<< series[0], series[1], series[2], series[3], series[4], series[5] >>>;
+    }
 
-    spork ~ vis.data(X, "/data");
+    X @=> laggedX;
+
+    vis.data(mat.rmstodb(X), "/data");
 }

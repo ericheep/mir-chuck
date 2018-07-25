@@ -7,7 +7,7 @@ import netP5.*;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-int filts = 165;
+int filts = 330;
 int cols, rows;
 int fr = 6;
 
@@ -17,10 +17,10 @@ float[][] plot;
 
 void oscEvent(OscMessage msg) {
   if (msg.checkAddrPattern("/data") == true) {
-    int idx = msg.get(0).intValue();
-    float value = msg.get(1).floatValue();
-
-    mov_spectra[0][idx] = value;
+    for (int i = 0; i < filts; i++) {
+      mov_spectra[0][i] = msg.get(i).floatValue();
+    }
+    redraw();
   }
   if (msg.checkAddrPattern("/redraw") == true) {
     redraw();
