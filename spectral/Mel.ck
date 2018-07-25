@@ -5,14 +5,41 @@ public class Mel {
 
     // main method to call in operation
     fun float[][] calc(int fft_size, float sr, string filter) {
-        return calc(fft_size, sr, 0, 1.0, filter);
+        0 => int n_filts;
+        0 => float minFrq;
+        0 => float maxFrq;
+
+        if (filter == "mel") {
+            32 => n_filts;
+            40.0 => minFrq;
+            sr/2.0 => minFrq;
+        }
+        if (filter == "bark") {
+            24 => n_filts;
+            50.0 => minFrq;
+            13500.0 => maxFrq;
+        }
+        if (filter == "constantQ") {
+            // 88 piano keys between 27.5 hz (low A) to 4186.01hz (high C)
+            88 * 3 => n_filts;
+            27.5 => minFrq;
+            4186.01 => maxFrq;
+        }
+        if (filter == "cent") {
+            // 3300 cents between 55.0 hz (low A) to 880.0hz (high A), broken up into whole steps
+            165 => n_filts;
+            110.0 => minFrq;
+            880.0 => maxFrq;
+        }
+
+        return calc(fft_size, sr, filter, n_filts, 1.0, minFrq, maxFrq);
     }
 
     // method with optional parameters to call (width and n_filts)
-    fun float[][] calc(int fft_size, float sr, int n_filts, float width, string filter) {
+    fun float[][] calc(int fft_size, float sr, string filter, int n_filts, float width, float minFrq, float maxFrq) {
 
         float fft_frqs[fft_size/2 + 1];
-        float bin_frqs[0];
+        float bin_frqs[n_filts + 2];
 
         // finds center bin frequencies
         for (int i; i < fft_frqs.cap(); i++) {
@@ -21,13 +48,8 @@ public class Mel {
 
         // mel scale transformation
         if (filter == "mel") {
-            if (n_filts == 0) {
-                // default number of mel bands
-                32 => n_filts;
-            }
-            n_filts + 2 => bin_frqs.size;
-            hz2mel(40.0) => float minmel;
-            hz2mel(sr/2.0) => float maxmel;
+            hz2mel(minFrq) => float minmel;
+            hz2mel(maxFrq) => float maxmel;
             for (int i; i < bin_frqs.cap(); i++) {
                 mel2hz(minmel + i/(bin_frqs.cap() - 1.0) * (maxmel - minmel)) => bin_frqs[i];
             }
@@ -35,13 +57,8 @@ public class Mel {
 
         // critical band bark transformation
         if (filter == "bark") {
-            if (n_filts == 0) {
-                // 24 critical bands betweeen 50hz and 13.5khz
-                24 => n_filts;
-            }
-            n_filts + 2 => bin_frqs.size;
-            hz2bark(50.0) => float minbark;
-            hz2bark(13500) => float maxbark;
+            hz2bark(minFrq) => float minbark;
+            hz2bark(maxFrq) => float maxbark;
             for (int i; i < bin_frqs.cap(); i++) {
                 bark2hz(minbark + i/(bin_frqs.cap() - 1.0) * (maxbark - minbark)) => bin_frqs[i];
             }
@@ -49,13 +66,8 @@ public class Mel {
 
         // constant Q transformation
         if (filter == "constantQ") {
-            if (n_filts == 0) {
-                // 88 piano keys between 27.5 hz (low A) to 4186.01hz (high C)
-                88 * 3 => n_filts;
-            }
-            n_filts + 2 => bin_frqs.size;
-            hz2pitch(27.5) => float minpitch;
-            hz2pitch(4186.01) => float maxpitch;
+            hz2pitch(minFrq) => float minpitch;
+            hz2pitch(maxFrq) => float maxpitch;
             for (int i; i < bin_frqs.cap(); i++) {
                 pitch2hz(minpitch + i/(bin_frqs.cap() - 1.0) * (maxpitch - minpitch)) => bin_frqs[i];
             }
@@ -63,19 +75,12 @@ public class Mel {
 
         // cent transformation
         if (filter == "cent") {
-            if (n_filts == 0) {
-                // 3300 cents between 55.0 hz (low A) to 880.0hz (high A)
-                // broken up into whole steps
-                165 => n_filts;
-            }
-            n_filts + 2 => bin_frqs.size;
-            hz2cent(110.0) => float minCent;
-            hz2cent(880.0) => float maxCent;
+            hz2cent(minFrq) => float minCent;
+            hz2cent(maxFrq) => float maxCent;
             for (int i; i < bin_frqs.cap(); i++) {
                 cent2hz(minCent + i/(bin_frqs.cap() - 1.0) * (maxCent - minCent)) => bin_frqs[i];
             }
         }
-
 
         // weight matrix
         float w[n_filts][fft_size];
