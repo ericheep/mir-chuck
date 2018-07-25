@@ -15,4 +15,4 @@ Machine.add(me.dir(-1) + "/utility/CrossCorr.ck");
 //Machine.add(me.dir() + "/kmeans_example.ck");
 //Machine.add(me.dir() + "/cossim_example.ck");
 //Machine.add(me.dir() + "/mfcc_example.ck");
-Machine.add(me.dir() + "/cent_example.ck");
+Machine.add(me.dir() + "/vad_example.ck");
