@@ -8,7 +8,11 @@ Visualization vis;
 CrossCorr c;
 
 // sound chain
-adc => FFT fft => blackhole;
+SndBuf snd => FFT fft => blackhole;
+
+snd.read(me.dir(-1) + "/audio/far-talking.wav");
+snd.pos(0);
+snd.loop(1);
 
 // fft parameters
 second / samp => float sr;
@@ -24,7 +28,8 @@ mat.transpose(mx) @=> mx;
 // cuts off unnecessary half of transformation weights
 mat.cutMat(mx, 0, win/2) @=> mx;
 
-float laggedX[0];
+2 => int LAGS;
+float laggedX[LAGS][mx[0].size()];
 
 // main program
 while (true) {
@@ -36,12 +41,28 @@ while (true) {
     // keystrength cross correlation
     mat.dot(blob.fvals(), mx) @=> float X[];
 
+    for (LAGS - 1 => int i; i > 0; i--) {
+        laggedX[i - 1] @=> laggedX[i];
+    }
+
+    X @=> laggedX[0];
+
     if (laggedX.size() > 0) {
-        c.crossCorr(X, laggedX, 3) @=> float series[];
+        c.crossCorr(X, laggedX[LAGS - 1], 3) @=> float series[];
         <<< series[0], series[1], series[2], series[3], series[4], series[5] >>>;
     }
 
-    X @=> laggedX;
+    /* vis.data(mat.rmstodb(X), "/data"); */
+}
 
-    vis.data(mat.rmstodb(X), "/data");
+fun float sum (float X[]) {
+    0.0 => float sum;
+    for (0 => int i; i < X.size(); i++) {
+        X[i] +=> sum;
+    }
+    return sum;
+}
+
+fun float mean (float X[]) {
+    return sum(X)/X.size();
 }
