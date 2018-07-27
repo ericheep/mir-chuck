@@ -7,6 +7,7 @@ Machine.add(me.dir(-1) + "/spectral/Mel.ck");
 Machine.add(me.dir(-1) + "/spectral/Spectral.ck");
 Machine.add(me.dir(-1) + "/spectral/Subband.ck");
 
+Machine.add(me.dir(-1) + "/utility/Peaks.ck");
 Machine.add(me.dir(-1) + "/utility/Matrix.ck");
 Machine.add(me.dir(-1) + "/utility/Visualization.ck");
 Machine.add(me.dir(-1) + "/utility/CrossCorr.ck");

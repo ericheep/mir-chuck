@@ -7,12 +7,24 @@ Matrix mat;
 Spectral s;
 Visualization vis;
 CrossCorr c;
+Peaks p;
 
 // sound chain
 SndBuf snd => FFT fft => blackhole;
 
-snd.read(me.dir(-1) + "/audio/far-breathing.wav");
-snd.read(me.dir(-1) + "/audio/far-talking.wav");
+fun void switch() {
+    while (true) {
+        snd.read(me.dir(-1) + "/audio/far-breathing.wav");
+        <<< "breathing", "" >>>;
+        5::second => now;
+        snd.read(me.dir(-1) + "/audio/far-talking.wav");
+        <<< "talking", "" >>>;
+        5::second => now;
+    }
+}
+
+spork ~ switch();
+
 snd.pos(0);
 snd.loop(1);
 
@@ -24,16 +36,12 @@ Windowing.hamming(N) => fft.window;
 UAnaBlob blob;
 
 // calculates transformation matrix
-mel.calc(4096, sr, "constantQ", 48, 1.0, 110.0, 440.0) @=> float mx[][];
-/* mel.calc(N, sr, "cent") @=> float mx[][]; */
-
+mel.calc(4096, sr, "constantQ", 48, 1.0, 110.0, 880.0) @=> float mx[][];
 mat.transpose(mx) @=> mx;
-
-// cuts off unnecessary half of transformation weights
 mat.cutMat(mx, 0, win/2) @=> mx;
 
 0 => int LAGS;
-2 => int delay;
+48 => int delay;
 
 float laggedX[LAGS][mx[0].size()];
 
@@ -43,25 +51,28 @@ while (true) {
 
     // creates our array of fft bins
     fft.upchuck() @=> blob;
-    <<< s.entropy(blob.fvals()), s.hfc(blob.fvals()), s.flatness(blob.fvals()) >>>;
 
     // constantQ dot product
     mat.dot(blob.fvals(), mx) @=> float X[];
-    vis.data(mat.rmstodb(X), "/data");
 
-
+    float series[];
     if (LAGS > 0) {
         for (LAGS - 1 => int i; i > 0; i--) {
             laggedX[i - 1] @=> laggedX[i];
         }
         X @=> laggedX[0];
-        c.crossCorr(X, laggedX[LAGS - 1], delay) @=> float series[];
-        /* <<< mean(series) >>>; */
+        c.crossCorr(X, laggedX[LAGS - 1], delay) @=> series;
     } else {
-        c.crossCorr(X, X, delay) @=> float series[];
-        /* <<< mean(series) >>>; */
+        c.crossCorr(X, X, delay) @=> series;
     }
 
+    <<<
+        "HFC:\t", s.hfc(X),
+        "Entropy:\t", s.entropy(X),
+        "Peaks:\t", p.peaks(series).size()
+    >>>;
+
+    vis.data(mat.rmstodb(X), "/data");
 }
 
 fun float sum (float X[]) {
