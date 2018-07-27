@@ -5,10 +5,16 @@ Currently adding common MIR features into ChucK, which in turn are visualized in
 
 | Feature                       | State         | File          |
 | ------------------------------| ------------- | ------------- |
+| Spectral Centroid				| Good			| Spectral.ck   |
+| Spectral Spread				| Good			| Spectral.ck   |
+| High Frequency Content		| Good			| Spectral.ck   |
+| Spectral Entropy				| Good			| Spectral.ck   |
+| Spectral Flatness				| Good			| Spectral.ck   |
+| Spectral Crest				| Good			| Spectral.ck   |
 | Subband Features              | Good          | Subband.ck    |
 | Short-time Fourier Transform  | Good          | Stft.ck       |
 | Mel/Bark Filter               | Good          | Mel.ck        |
-| MFCC                          | Almost Good   | Sci.ck        |
+| MFCC                          | Good			| Sci.ck        |
 | Matrix Methods                | Good          | Matrix.ck     |
 | SciPy-like Methods            | Good          | Sci.ck        |
 | Chromagram                    | Good          | Chromagram.ck |
