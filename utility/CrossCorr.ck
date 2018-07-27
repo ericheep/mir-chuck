@@ -26,8 +26,10 @@ public class CrossCorr {
     fun float[] crossCorr(float A[], float B[], int lag) {
         A.size() => int N;
 
-        mean(A, N) => float meanA;
-        mean(B, N) => float meanB;
+        /* mean(A, N) => float meanA; */
+        /* mean(B, N) => float meanB; */
+        0 => float meanA;
+        0 => float meanB;
 
         denominator(A, B, meanA, meanB, N) => float denom;
 
