@@ -69,7 +69,7 @@ while (true) {
     <<<
         "HFC:\t", s.hfc(X),
         "Entropy:\t", s.entropy(X),
-        "Peaks:\t", p.peaks(series).size()
+        "Peaks:\t", p.peaks(p.filter(series, 2)).size()
     >>>;
 
     vis.data(mat.rmstodb(X), "/data");
