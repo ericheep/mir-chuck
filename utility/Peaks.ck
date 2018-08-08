@@ -17,9 +17,11 @@ public class Peaks {
     }
 
     fun float[] peakValues(float x[], int peakIndices[]) {
-        float p[0];
-        for (0 => int i; i < peakIndices.size(); i++) {
-            p << x[peakIndices[i]];
+        peakIndices.size() => int N;
+
+        float p[N];
+        for (0 => int i; i < N; i++) {
+            x[peakIndices[i]] => p[i];
         }
         return p;
     }
@@ -27,70 +29,50 @@ public class Peaks {
     fun int[] highestPeaks(float x[], int amount) {
         peaks(x) @=> int peakIndices[];
         peakValues(x, peakIndices) @=> float peakValues[];
-        argBubbleSort(peakValues, peakIndices, peakValues.size());
+        argSort(peakValues) @=> int indices[];
 
-        peakIndices.size(amount);
-        return peakIndices;
+        int finalIndices[peakIndices.size()];
+        for (0 => int i; i < indices.size(); i++) {
+            peakIndices[indices[i]] => finalIndices[i];
+        }
+
+        // reduce size
+        finalIndices.size(amount);
+
+        return finalIndices;
     }
 
-    fun void argBubbleSort(float values[], int indices[], int n)
-    {
-        int i, j;
-        for (0 => int i; i < n - 1; i++) {
+    fun void reverse(int arr[]) {
+        int reverseArr[arr.size()];
+        for (0 => int i; i < arr.size(); i++) {
+            arr[i] => reverseArr[arr.size() - 1 - i];
+        }
+        for (0 => int i; i < arr.size(); i++) {
+            reverseArr[i] => arr[i];
+        }
+    }
 
-            // Last i elements are already in place
-            for (0 => int j; j < n - i - 1; j++)  {
-                if (values[j] > values[j + 1]) {
-                    values[i] => float temp;
-                    values[j] => values[i];
-                    temp => values[j];
+    // index sorting
+    fun int[] argSort(float x[]) {
+        float xCopy[x.size()];
+        for (0 => int i; i < x.size(); i++) {
+            x[i] => xCopy[i];
+        }
 
-                    indices[i] => int tempIndex;
-                    indices[j] => indices[i];
-                    tempIndex => indices[j];
+        int idx[x.cap()];
+        for (0 => int i; i < xCopy.cap(); i++) {
+            float max;
+            int idx_max;
+            for (int j; j < xCopy.cap(); j++) {
+                if (xCopy[j] >= max) {
+                    xCopy[j] => max;
+                    j => idx_max;
                 }
             }
+            idx_max => idx[i];
+            0 => xCopy[idx_max];
         }
-    }
-
-
-    fun void quickSort(int arr[], int low, int high)
-    {
-        if (low < high)
-        {
-            /* pi is partitioning index, arr[p] is now
-               at right place */
-            partition(arr, low, high) => int partitionIndex;
-
-            // Separately sort elements before
-            // partition and after partition
-            quickSort(arr, low, partitionIndex - 1);
-            quickSort(arr, partitionIndex + 1, high);
-        }
-    }
-
-    fun int partition (int arr[], int low, int high)
-    {
-        arr[high] => int pivot;   // pivot
-        (low - 1) => int i;   // Index of smaller element
-
-        for (low => int j; j <=  high - 1; j++) {
-            // equal to pivot
-            if (arr[j] <= pivot) {
-                i++;    // increment index of smaller element
-
-                // swap
-                arr[i] => int temp;
-                arr[j] => arr[i];
-                temp => arr[j];
-            }
-        }
-        // swap
-        arr[i + 1] => int temp;
-        arr[high] => arr[i + 1];
-        temp => arr[high];
-
-        return (i + 1);
+        return idx;
     }
 
     fun float[] filter(float x[], int m) {
@@ -112,9 +94,14 @@ public class Peaks {
 
 /* Peaks p; */
 
-/* [0.1, 0.2, 0.1, 0.4, 0.5, 0.1, 0.0, 0.8, 0.7, 0.5] @=> float x[]; */
+/* float arr[20]; */
+/* for (0 => int i; i < arr.size(); i++) { */
+/*     Math.random2f(0.0, 1.0) => arr[i]; */
+/* } */
 
-/* p.highestPeaks(x, 2) @=> int indices[]; */
+/* p.highestPeaks(arr, 3) @=> int indices[]; */
 
-/* <<< indices[0], indices[1] >>>; */
+/* <<< "---", "" >>>; */
+/* <<< indices[0], indices[1], indices[2] >>>; */
+/* <<< arr[indices[0]], arr[indices[1]], arr[indices[2]] >>>; */
 

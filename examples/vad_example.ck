@@ -40,7 +40,7 @@ mel.calc(4096, sr, "constantQ", 48, 1.0, 110.0, 880.0) @=> float mx[][];
 mat.transpose(mx) @=> mx;
 mat.cutMat(mx, 0, win/2) @=> mx;
 
-0 => int LAGS;
+3 => int LAGS;
 24 => int delay;
 
 float laggedX[LAGS][mx[0].size()];
@@ -69,16 +69,20 @@ while (true) {
         c.crossCorr(mX, mX, delay) @=> series;
     }
 
-    p.highestPeaks(series, 1) @=> int peaks[];
+    p.highestPeaks(p.filter(mX, 3), 6) @=> int peaks[];
+
+    float send[series.size()];
+    for (0 => int i; i < peaks.size(); i++) {
+        series[peaks[i]] * 100 => send[peaks[i]];
+    }
 
     <<<
-        "HFC:\t", s.hfc(X),
-        "Entropy:\t", s.entropy(X),
-        "Peaks:\t", peaks[0]
-
+        /* "HFC:\t", s.hfc(X), */
+        "Peaks:\t", peaks[0], peaks[1], peaks[2],
+        "Mean:\t", mean(peaks)
     >>>;
 
-    vis.data(mat.rmstodb(mX), "/data");
+    vis.data(send, "/data");
 }
 
 fun void power(float X[]) {
