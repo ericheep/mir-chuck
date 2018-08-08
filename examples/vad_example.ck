@@ -14,10 +14,10 @@ SndBuf snd => FFT fft => blackhole;
 
 fun void switch() {
     while (true) {
-        snd.read(me.dir(-1) + "/audio/far-breathing.wav");
+        snd.read(me.dir(-1) + "/audio/close-breathing.wav");
         <<< "breathing", "" >>>;
         5::second => now;
-        snd.read(me.dir(-1) + "/audio/far-talking.wav");
+        snd.read(me.dir(-1) + "/audio/close-talking.wav");
         <<< "talking", "" >>>;
         5::second => now;
     }
@@ -41,7 +41,7 @@ mat.transpose(mx) @=> mx;
 mat.cutMat(mx, 0, win/2) @=> mx;
 
 0 => int LAGS;
-48 => int delay;
+24 => int delay;
 
 float laggedX[LAGS][mx[0].size()];
 
@@ -52,37 +52,49 @@ while (true) {
     // creates our array of fft bins
     fft.upchuck() @=> blob;
 
+    blob.fvals() @=> float X[];
+    power(X);
+
     // constantQ dot product
-    mat.dot(blob.fvals(), mx) @=> float X[];
+    mat.dot(X, mx) @=> float mX[];
 
     float series[];
     if (LAGS > 0) {
         for (LAGS - 1 => int i; i > 0; i--) {
             laggedX[i - 1] @=> laggedX[i];
         }
-        X @=> laggedX[0];
-        c.crossCorr(X, laggedX[LAGS - 1], delay) @=> series;
+        mX @=> laggedX[0];
+        c.crossCorr(mX, laggedX[LAGS - 1], delay) @=> series;
     } else {
-        c.crossCorr(X, X, delay) @=> series;
+        c.crossCorr(mX, mX, delay) @=> series;
     }
+
+    p.highestPeaks(series, 1) @=> int peaks[];
 
     <<<
         "HFC:\t", s.hfc(X),
         "Entropy:\t", s.entropy(X),
-        "Peaks:\t", p.peaks(p.filter(series, 2)).size()
+        "Peaks:\t", peaks[0]
+
     >>>;
 
-    vis.data(mat.rmstodb(X), "/data");
+    vis.data(mat.rmstodb(mX), "/data");
 }
 
-fun float sum (float X[]) {
-    0.0 => float sum;
+fun void power(float X[]) {
+    for (0 => int i; i < X.size(); i++) {
+        X[i] * X[i] => X[i];
+    }
+}
+
+fun int sum (int X[]) {
+    0 => int sum;
     for (0 => int i; i < X.size(); i++) {
         X[i] +=> sum;
     }
     return sum;
 }
 
-fun float mean (float X[]) {
+fun int mean (int X[]) {
     return sum(X)/X.size();
 }
