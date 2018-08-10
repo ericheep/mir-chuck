@@ -116,14 +116,51 @@ public class Spectral {
     }
 
     // crest factor
-    fun float crest(float x[]){
+    fun float crest(float X[]){
         float max, sum;
-        for (int j; j < x.cap(); j++) {
-            if (x[j] >= max) {
-                x[j] => max;
+        for (int j; j < X.cap(); j++) {
+            if (X[j] >= max) {
+                X[j] => max;
             }
-            x[j] +=> sum;
+            X[j] +=> sum;
         }
         return max / sum;
+    }
+
+    fun float mu(int k, float X[]) {
+        0.0 => float numerator;
+        0.0 => float denominator;
+
+        for (0 => int i; i < X.size(); i++) {
+            Math.pow(i, k) * Math.fabs(X[i]) +=> numerator;
+            X[i] +=> denominator;
+        }
+
+        return numerator / denominator;
+    }
+
+    // spectral kurtosis
+    fun float kurtosis(float X[]) {
+        mu(1, X) => float mu1;
+        mu(2, X) => float mu2;
+        mu(3, X) => float mu3;
+        mu(4, X) => float mu4;
+
+        -3 * Math.pow(mu1, 4) + 6 * mu1 * mu2 - 4 * mu1 * mu3 + mu4 => float numerator;
+        Math.pow(Math.sqrt(mu2 - Math.pow(mu1, 2)), 4) => float denominator;
+
+        return numerator / denominator;
+    }
+
+    // spectral skewness
+    fun float skewness(float X[]) {
+        mu(1, X) => float mu1;
+        mu(2, X) => float mu2;
+        mu(3, X) => float mu3;
+
+        2 * Math.pow(mu1, 3) - 3 * mu1 * mu2 + mu3 => float numerator;
+        Math.pow(Math.sqrt(mu2 - Math.pow(mu1, 2)), 3) => float denominator;
+
+        return numerator / denominator;
     }
 }
