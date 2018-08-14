@@ -3,6 +3,28 @@
 
 public class Mel {
 
+    float runningDeltas[3][0];
+
+    fun float[] deltas(float X[]) {
+        X.size() => int N;
+
+        if (runningDeltas[0].size() == 0) {
+            for (0 => int i; i < 3; i++) {
+                runningDeltas[i].size(N);
+            }
+        }
+
+        for (2 => int i; i > 0; i--) {
+            for (0 => int j; j < N; j++) {
+                runningDeltas[i - 1][j] => runningDeltas[i][j];
+            }
+        }
+
+        for (0 => int i; i < N; i++) {
+
+        }
+    }
+
     // main method to call in operation
     fun float[][] calc(int fft_size, float sr, string filter) {
         0 => int n_filts;
@@ -163,3 +185,8 @@ public class Mel {
         else return y;
     }
 }
+
+Mel mel;
+
+[1.0, 2.0, 3.0, 4.0, 5.0] @=> float arr[];
+mel.deltas(arr);

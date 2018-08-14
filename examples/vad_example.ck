@@ -14,10 +14,10 @@ SndBuf snd => FFT fft => blackhole;
 
 fun void switch() {
     while (true) {
-        snd.read(me.dir(-1) + "/audio/close-breathing.wav");
+        snd.read(me.dir(-1) + "/audio/far-breathing.wav");
         <<< "breathing", "" >>>;
         5::second => now;
-        snd.read(me.dir(-1) + "/audio/close-talking.wav");
+        snd.read(me.dir(-1) + "/audio/far-talking.wav");
         <<< "talking", "" >>>;
         5::second => now;
     }
@@ -44,6 +44,7 @@ mat.cutMat(mx, 0, win/2) @=> mx;
 24 => int delay;
 
 float laggedX[LAGS][mx[0].size()];
+float hfcAverage[4];
 
 // main program
 while (true) {
@@ -53,15 +54,14 @@ while (true) {
     fft.upchuck() @=> blob;
 
     blob.fvals() @=> float X[];
-    power(X);
+    // power(X);
 
     // constantQ dot product
     mat.dot(X, mx) @=> float mX[];
 
     float series[];
     if (LAGS > 0) {
-        for (LAGS - 1 => int i; i > 0; i--) {
-            laggedX[i - 1] @=> laggedX[i];
+        for (LAGS - 1 => int i; i > 0; i--) { laggedX[i - 1] @=> laggedX[i];
         }
         mX @=> laggedX[0];
         c.crossCorr(mX, laggedX[LAGS - 1], delay) @=> series;
@@ -69,20 +69,22 @@ while (true) {
         c.crossCorr(mX, mX, delay) @=> series;
     }
 
-    p.highestPeaks(p.filter(mX, 3), 6) @=> int peaks[];
+    p.highestPeaks(p.filter(series, 2), 2) @=> int peaks[];
 
     float send[series.size()];
     for (0 => int i; i < peaks.size(); i++) {
         series[peaks[i]] * 100 => send[peaks[i]];
     }
 
-    <<<
-        /* "HFC:\t", s.hfc(X), */
-        "Peaks:\t", peaks[0], peaks[1], peaks[2],
-        "Mean:\t", mean(peaks)
-    >>>;
+    /* <<< */
+        /* "HFC:\t", movingAverage(s.hfc(X), hfcAverage) */
+        /* s.kurtosis(X) */
+        /* "Entropy:\t", s.flatness(X), */
+        /* "Peaks:\t", peaks[0] */
+    /* >>>; */
 
-    vis.data(send, "/data");
+    <<< s.kurtosis(X), s.skewness(X) >>>;
+    /* vis.data(send, "/data"); */
 }
 
 fun void power(float X[]) {
@@ -91,14 +93,25 @@ fun void power(float X[]) {
     }
 }
 
-fun int sum (int X[]) {
-    0 => int sum;
+fun float sum (float X[]) {
+    0 => float sum;
     for (0 => int i; i < X.size(); i++) {
         X[i] +=> sum;
     }
     return sum;
 }
 
-fun int mean (int X[]) {
+fun float movingAverage(float value, float average[]) {
+    average.size() => int length;
+    for (length - 2 => int i; i >= 0; i--) {
+        average[i] => average[i + 1];
+    }
+
+    value => average[0];
+
+    return mean(average);
+}
+
+fun float mean (float X[]) {
     return sum(X)/X.size();
 }
