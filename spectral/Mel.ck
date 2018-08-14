@@ -3,26 +3,46 @@
 
 public class Mel {
 
-    float runningDeltas[3][0];
+    float runningDeltas[5][0];
 
     fun float[] deltas(float X[]) {
-        X.size() => int N;
+        X.size() => int size;
+
+        2 => int N => int mid;
+        N * 2 + 1 => int deltaSize;
 
         if (runningDeltas[0].size() == 0) {
-            for (0 => int i; i < 3; i++) {
-                runningDeltas[i].size(N);
+            for (0 => int i; i < deltaSize; i++) {
+                runningDeltas[i].size(size);
             }
         }
 
-        for (2 => int i; i > 0; i--) {
-            for (0 => int j; j < N; j++) {
+        for (deltaSize - 1 => int i; i > 0; i--) {
+            for (0 => int j; j < size; j++) {
                 runningDeltas[i - 1][j] => runningDeltas[i][j];
             }
         }
 
-        for (0 => int i; i < N; i++) {
-
+        for (0 => int i; i < size; i++) {
+            X[i] => runningDeltas[0][i];
         }
+
+        0.0 => float denominator;
+        for (1 => int i; i <= N; i++) {
+            i * i +=> denominator;
+        }
+        2.0 *=> denominator;
+
+        float d[size];
+        for (0 => int i; i < size; i++) {
+            0.0 => float numerator;
+            for (1 => int j; j <= N; j++) {
+                j * (runningDeltas[mid + j][i] - runningDeltas[mid - j][i]) +=> numerator;
+            }
+            numerator/denominator => d[i];
+        }
+
+        return d;
     }
 
     // main method to call in operation
@@ -186,7 +206,30 @@ public class Mel {
     }
 }
 
-Mel mel;
+/* Mel mel; */
 
-[1.0, 2.0, 3.0, 4.0, 5.0] @=> float arr[];
-mel.deltas(arr);
+/* [1.0, 2.0, 3.0, 4.0, 10.0] @=> float arr1[]; */
+/* [2.0, 2.0, 3.0, 4.0, 9.0] @=> float arr2[]; */
+/* [3.0, 2.0, 3.0, 4.0, 8.0] @=> float arr3[]; */
+/* [4.0, 2.0, 3.0, 4.0, 7.0] @=> float arr4[]; */
+/* [5.0, 2.0, 3.0, 4.0, 6.0] @=> float arr5[]; */
+/* [6.0, 2.0, 3.0, 4.0, 5.0] @=> float arr6[]; */
+/* [7.0, 2.0, 3.0, 4.0, 4.0] @=> float arr7[]; */
+/* [8.0, 2.0, 3.0, 4.0, 3.0] @=> float arr8[]; */
+/* [9.0, 2.0, 3.0, 4.0, 2.0] @=> float arr9[]; */
+/* [10.0, 2.0, 3.0, 4.0, 1.0] @=> float arr10[]; */
+
+/* print(mel.deltas(arr1)); */
+/* print(mel.deltas(arr2)); */
+/* print(mel.deltas(arr3)); */
+/* print(mel.deltas(arr4)); */
+/* print(mel.deltas(arr5)); */
+/* print(mel.deltas(arr6)); */
+/* print(mel.deltas(arr7)); */
+/* print(mel.deltas(arr8)); */
+/* print(mel.deltas(arr9)); */
+/* print(mel.deltas(arr10)); */
+
+/* fun void print(float arr[]) { */
+/*     <<< arr[0], arr[1], arr[2], arr[3], arr[4], "" >>>; */
+/* } */
