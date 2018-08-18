@@ -3,89 +3,102 @@
 
 public class Transform {
 
-    // main method to call in operation
-    fun float[][] compute(int N, float sr, string filter) {
-        0 => int numFilters;
-        0 => float minFrq;
-        0 => float maxFrq;
+    0.0 => private float width;
+    fun float setWidth(float w) {
+        w => width;
+    }
+    setWidth(1.0);
 
-        if (filter == "mel") {
-            32 => numFilters;
-            40.0 => minFrq;
-            sr/2.0 => minFrq;
-        }
-        if (filter == "bark") {
-            24 => numFilters;
-            50.0 => minFrq;
-            13500.0 => maxFrq;
-        }
-        if (filter == "constantQ") {
-            // 88 piano keys between 27.5 hz (low A) to 4186.01hz (high C)
-            88 * 3 => numFilters;
-            27.5 => minFrq;
-            4186.01 => maxFrq;
-        }
-        if (filter == "cent") {
-            // 3300 cents between 55.0 hz (low A) to 880.0hz (high A), broken up into whole steps
-            165 => numFilters;
-            110.0 => minFrq;
-            880.0 => maxFrq;
-        }
-
-        return compute(N, sr, filter, numFilters, 1.0, minFrq, maxFrq);
+    fun float[][] mel(float sr, int N) {
+        32 =>       int numFilters;
+        40.0 =>     float minFrq;
+        sr/2.0 =>   float minFrq;
+        return mel(sr, N, numFilters, minFrq, maxFrq);
     }
 
-    // method with optional parameters to call (width and numFilters)
-    fun float[][] compute(int N, float sr, string filter, int numFilters, float width, float minFrq, float maxFrq) {
+    fun float[][] mel(float sr, int N, int numFilters, float minFrq, float minFrq) {
+        hz2mel(minFrq) => float minMel;
+        hz2mel(maxFrq) => float maxMel;
 
-        float fftFrqs[N/2 + 1];
         float binFrqs[numFilters + 2];
+        for (0 => int i; i < binFrqs.size(); i++) {
+            mel2hz(minMel + i/(binFrqs.size() - 1.0) * (maxMel - minMel)) => binFrqs[i];
+        }
+
+        return compute(sr, N, numFilters, width, binFrqs);
+    }
+
+    fun float[][] bark(float sr, int N) {
+        24 =>       int numFilters;
+        50.0 =>     float minFrq;
+        13500.0 =>  float maxFrq;
+        return bark(sr, N, numFilters, minFrq, maxFrq);
+    }
+
+    fun float[][] bark(float sr, int N, int numFilters, float minFrq, float maxFrq) {
+        hz2bark(minFrq) => float minBark;
+        hz2bark(maxFrq) => float maxBark;
+
+        float binFrqs[numFilters + 2];
+        for (0 => int i; i < binFrqs.size(); i++) {
+            bark2hz(minBark + i/(binFrqs.size() - 1.0) * (maxBark - minBark)) => binFrqs[i];
+        }
+
+        return compute(sr, N, numFilters, width, binFrqs);
+    }
+
+    fun float[][] constantQ(float sr, int N) {
+        // recommend a high N >= 4096
+        88 * 3 =>   int numFilters;
+        27.5 =>     float minFrq;
+        4186.01 =>  float maxFrq;
+        return constantQsr, N, numFilters, minFrq, maxFrq);
+    }
+
+    fun float[][] constantQ(float sr, int N) {
+        hz2pitch(minFrq) => float minPitch;
+        hz2pitch(maxFrq) => float maxPitch;
+
+        float binFrqs[numFilters + 2];
+        for (0 => int i; i < binFrqs.size(); i++) {
+            pitch2hz(minPitch + i/(binFrqs.size() - 1.0) * (maxPitch - minPitch)) => binFrqs[i];
+        }
+
+        return compute(sr, N, numFilters, width, binFrqs);
+    }
+
+    fun float[][] cent(float sr, int N) {
+        // recommend a high N >= 4096
+        330 =>      int numFilters;
+        55.0 =>     float minFrq;
+        880.0 =>    float maxFrq;
+        return cent(sr, N, numFilters, minFrq, maxFrq);
+    }
+
+    fun float[][] cent(float sr, int N, int numFilters, float minFrq, float maxFrq) {
+        hz2cent(minFrq) => float minCent;
+        hz2cent(maxFrq) => float maxCent;
+
+        float binFrqs[numFilters + 2];
+        for (0 => int i; i < binFrqs.size(); i++) {
+            cent2hz(minCent + i/(binFrqs.size() - 1.0) * (maxCent - minCent)) => binFrqs[i];
+        }
+
+        return compute(sr, N, numFilters, width, binFrqs);
+    }
+
+    fun float[][] compute(float sr, int N, int numFilters, float width, float binFrqs[]) {
+        float fftFrqs[N/2 + 1];
 
         // finds center bin frequencies
-        for (int i; i < fftFrqs.cap(); i++) {
+        for (0 => int i; i < fftFrqs.size(); i++) {
             sr/N * i => fftFrqs[i];
-        }
-
-        // mel scale transformation
-        if (filter == "mel") {
-            hz2mel(minFrq) => float minmel;
-            hz2mel(maxFrq) => float maxmel;
-            for (int i; i < binFrqs.cap(); i++) {
-                mel2hz(minmel + i/(binFrqs.cap() - 1.0) * (maxmel - minmel)) => binFrqs[i];
-            }
-        }
-
-        // critical band bark transformation
-        if (filter == "bark") {
-            hz2bark(minFrq) => float minbark;
-            hz2bark(maxFrq) => float maxbark;
-            for (int i; i < binFrqs.cap(); i++) {
-                bark2hz(minbark + i/(binFrqs.cap() - 1.0) * (maxbark - minbark)) => binFrqs[i];
-            }
-        }
-
-        // constant Q transformation
-        if (filter == "constantQ") {
-            hz2pitch(minFrq) => float minpitch;
-            hz2pitch(maxFrq) => float maxpitch;
-            for (int i; i < binFrqs.cap(); i++) {
-                pitch2hz(minpitch + i/(binFrqs.cap() - 1.0) * (maxpitch - minpitch)) => binFrqs[i];
-            }
-        }
-
-        // cent transformation
-        if (filter == "cent") {
-            hz2cent(minFrq) => float minCent;
-            hz2cent(maxFrq) => float maxCent;
-            for (int i; i < binFrqs.cap(); i++) {
-                cent2hz(minCent + i/(binFrqs.cap() - 1.0) * (maxCent - minCent)) => binFrqs[i];
-            }
         }
 
         // weight matrix
         float w[numFilters][N];
 
-        for (int i; i < numFilters; i++) {
+        for (0 => int i; i < numFilters; i++) {
             float fs[3];
 
             for (int j; j < 3; j++) {
@@ -96,14 +109,14 @@ public class Transform {
             }
 
             // low and high bins
-            float lo[fftFrqs.cap()];
-            float hi[fftFrqs.cap()];
+            float lo[fftFrqs.size()];
+            float hi[fftFrqs.size()];
 
-            for (int j; j < fftFrqs.cap(); j++) {
+            for (int j; j < fftFrqs.size(); j++) {
                 (fftFrqs[j] - fs[0])/(fs[1] - fs[0]) => lo[j];
                 (fs[2] - fftFrqs[j])/(fs[2] - fs[1]) => hi[j];
             }
-            for (int j; j < fftFrqs.cap(); j++) {
+            for (int j; j < fftFrqs.size(); j++) {
                 max(0, min(lo[j], hi[j])) => w[i][j];
             }
         }
@@ -112,54 +125,56 @@ public class Transform {
     }
 
     // maximum value, utility function
-    fun float max(float x, float y) {
+    private fun float max(float x, float y) {
         if (x > y) return x;
         else return y;
     }
 
     // minimum value, utility function
-    fun float min(float x, float y) {
+    private fun float min(float x, float y) {
         if (x < y) return x;
         else return y;
     }
+
+    // converts hz to cent scale
+    private fun float hz2cent(float frq) {
+        return 1200 * Math.log2(frq/440) + 5700;
+    }
+
+    // converts cent to hz
+    private fun float cent2hz(float cent) {
+        return Math.pow(2, (cent - 5700)/1200) * 440;
+    }
+
+    // converts hz to q scale
+    private fun float hz2pitch(float frq) {
+        return 12 * Math.log2(frq/440) + 49;
+    }
+
+    // converts frq to hz
+    private fun float pitch2hz(float p) {
+        return Math.pow(2, (p - 49)/12) * 440;
+    }
+
+    // converts hz to mel scale
+    private fun float hz2mel(float frq) {
+        return Math.log10(1 + frq/700) * 2595;
+    }
+
+    // converts mel scale to hz
+    private fun float mel2hz(float mel) {
+        return 700 * (Math.pow(10, mel/2595) - 1);
+    }
+
+    // converts hz to bark scal
+    private fun float hz2bark(float frq) {
+        return (26.81 * frq)/(1960 + frq) - 0.51;
+    }
+
+    // converts bark scale to hz
+    private fun float bark2hz(float bark) {
+        return (-19600 * bark - 9996)/(10 * bark - 263);
+    }
 }
 
-// converts hz to cent scale
-fun float hz2cent(float frq) {
-    return 1200 * Math.log2(frq/440) + 5700;
-}
-
-// converts cent to hz
-fun float cent2hz(float cent) {
-    return Math.pow(2, (cent - 5700)/1200) * 440;
-}
-
-// converts hz to q scale
-fun float hz2pitch(float frq) {
-    return 12 * Math.log2(frq/440) + 49;
-}
-
-// converts frq to hz
-fun float pitch2hz(float p) {
-    return Math.pow(2, (p - 49)/12) * 440;
-}
-
-// converts hz to mel scale
-fun float hz2mel(float frq) {
-    return Math.log10(1 + frq/700) * 2595;
-}
-
-// converts mel scale to hz
-fun float mel2hz(float mel) {
-    return 700 * (Math.pow(10, mel/2595) - 1);
-}
-
-// converts hz to bark scal
-fun float hz2bark(float frq) {
-    return (26.81 * frq)/(1960 + frq) - 0.51;
-}
-
-// converts bark scale to hz
-fun float bark2hz(float bark) {
-    return (-19600 * bark - 9996)/(10 * bark - 263);
-}
+Transform f;
