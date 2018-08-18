@@ -5,6 +5,7 @@ SpectralCentroid centroid;
 SpectralSpread spread;
 SpectralKurtosis kurtosis;
 SpectralSkewness skewness;
+SubbandCentroids centroids;
 
 // sound chain
 adc => FFT fft => blackhole;
@@ -15,6 +16,8 @@ second / samp => float sr;
 Windowing.hamming(N) => fft.window;
 
 UAnaBlob blob;
+
+[0.0, 1000.0, 4000.0, 8000.0] @=> float subbandCentroidBanks[];
 
 // main program
 while (true) {
@@ -30,10 +33,16 @@ while (true) {
     kurtosis.compute(X) => float kurt;
     skewness.compute(X) => float skew;
 
+    centroids.compute(X, subbandCentroidBanks, sr, N) @=> float subCents[];
+
     <<<
         "Centroid: ", cent,
         "Spread: ", spr,
         "Kurtosis: ", kurt,
         "Skewness: ", skew
+    >>>;
+
+    <<<
+        "SubbandCentroids: ", subCents[0], subCents[1], subCents[2]
     >>>;
 }
