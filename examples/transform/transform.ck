@@ -1,7 +1,8 @@
-// features.ck
+// transform.ck
 
 // classes
-Transforma transform;
+Transform transform;
+MFCCs mfccs;
 Matrix matrix;
 
 // sound chain
@@ -15,8 +16,11 @@ Windowing.hamming(N) => fft.window;
 UAnaBlob blob;
 
 // create mel coefficients
-transform.mel(N, sr) @=> float mx[][];
+transform.mel(sr, N) @=> float mx[][];
+
+// transpose and remove unnecessary data
 matrix.transpose(mx) @=> mx;
+matrix.cutMatrix(mx, 0, N/2) @=> mx;
 
 // main program
 while (true) {
@@ -27,5 +31,8 @@ while (true) {
     blob.fvals() @=> float X[];
 
     // features
-    matrix.dot(X, mx) @=> float mel;
+    matrix.dot(X, mx) @=> float melArray[];
+
+    // transform mel bands to mfccs
+    mfccs.compute(melArray) @=> float mfccArray[];
 }

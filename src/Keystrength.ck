@@ -9,7 +9,7 @@ public class Keystrength {
         float gomez_profs[12][12];
         // reads form txt file
         FileIO file;
-        file.open("gomezprofs.txt", FileIO.READ);
+        file.open("utility/gomezprofs.txt", FileIO.READ);
         for (int i; i < 12; i++) {
             for (int j; j < 12; j++) {
                 file => gomez_profs[i][j];

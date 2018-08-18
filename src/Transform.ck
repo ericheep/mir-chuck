@@ -3,7 +3,7 @@
 
 public class Transform {
 
-    0.0 => private float width;
+    0.0 => float width;
     fun float setWidth(float w) {
         w => width;
     }
@@ -12,11 +12,11 @@ public class Transform {
     fun float[][] mel(float sr, int N) {
         32 =>       int numFilters;
         40.0 =>     float minFrq;
-        sr/2.0 =>   float minFrq;
+        sr/2.0 =>   float maxFrq;
         return mel(sr, N, numFilters, minFrq, maxFrq);
     }
 
-    fun float[][] mel(float sr, int N, int numFilters, float minFrq, float minFrq) {
+    fun float[][] mel(float sr, int N, int numFilters, float minFrq, float maxFrq) {
         hz2mel(minFrq) => float minMel;
         hz2mel(maxFrq) => float maxMel;
 
@@ -52,10 +52,10 @@ public class Transform {
         88 * 3 =>   int numFilters;
         27.5 =>     float minFrq;
         4186.01 =>  float maxFrq;
-        return constantQsr, N, numFilters, minFrq, maxFrq);
+        return constantQ(sr, N, numFilters, minFrq, maxFrq);
     }
 
-    fun float[][] constantQ(float sr, int N) {
+    fun float[][] constantQ(float sr, int N, int numFilters, float minFrq, float maxFrq) {
         hz2pitch(minFrq) => float minPitch;
         hz2pitch(maxFrq) => float maxPitch;
 
@@ -125,54 +125,54 @@ public class Transform {
     }
 
     // maximum value, utility function
-    private fun float max(float x, float y) {
+    private float max(float x, float y) {
         if (x > y) return x;
         else return y;
     }
 
     // minimum value, utility function
-    private fun float min(float x, float y) {
+    private float min(float x, float y) {
         if (x < y) return x;
         else return y;
     }
 
     // converts hz to cent scale
-    private fun float hz2cent(float frq) {
+    private float hz2cent(float frq) {
         return 1200 * Math.log2(frq/440) + 5700;
     }
 
     // converts cent to hz
-    private fun float cent2hz(float cent) {
+    private float cent2hz(float cent) {
         return Math.pow(2, (cent - 5700)/1200) * 440;
     }
 
     // converts hz to q scale
-    private fun float hz2pitch(float frq) {
+    private float hz2pitch(float frq) {
         return 12 * Math.log2(frq/440) + 49;
     }
 
     // converts frq to hz
-    private fun float pitch2hz(float p) {
+    private float pitch2hz(float p) {
         return Math.pow(2, (p - 49)/12) * 440;
     }
 
     // converts hz to mel scale
-    private fun float hz2mel(float frq) {
+    private float hz2mel(float frq) {
         return Math.log10(1 + frq/700) * 2595;
     }
 
     // converts mel scale to hz
-    private fun float mel2hz(float mel) {
+    private float mel2hz(float mel) {
         return 700 * (Math.pow(10, mel/2595) - 1);
     }
 
     // converts hz to bark scal
-    private fun float hz2bark(float frq) {
+    private float hz2bark(float frq) {
         return (26.81 * frq)/(1960 + frq) - 0.51;
     }
 
     // converts bark scale to hz
-    private fun float bark2hz(float bark) {
+    private float bark2hz(float bark) {
         return (-19600 * bark - 9996)/(10 * bark - 263);
     }
 }

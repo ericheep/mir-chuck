@@ -1,5 +1,5 @@
 // Matrix.ck
-// Eric Heep
+
 
 public class Matrix {
 
@@ -9,7 +9,7 @@ public class Matrix {
         for (int i; i < num; i++) {
            float max;
            int idx_max;
-           for (int j; j < x.cap(); j++) {
+           for (int j; j < x.size(); j++) {
                 if (x[j] >= max) {
                     x[j] => max;
                     j => idx_max;
@@ -22,17 +22,17 @@ public class Matrix {
     }
 
     // reduces rows of a 2D array
-    fun float[][] cutMat(float x[][], int low, int high) {
+    fun float[][] cutMatrix(float x[][], int low, int high) {
         high - low => int rows;
-        float out[rows][x[0].cap()];
-        float temp[x.cap()];
-        for (int i; i < x[0].cap(); i++) {
-            for (int j; j < x.cap(); j++) {
+        float out[rows][x[0].size()];
+        float temp[x.size()];
+        for (int i; i < x[0].size(); i++) {
+            for (int j; j < x.size(); j++) {
                 x[j][i] => temp[j];
             }
             cut(temp, low, high) @=> float r[];
             for (int j; j < rows; j++) {
-                r[j] => out[j][i];    
+                r[j] => out[j][i];
             }
         }
         return out;
@@ -50,10 +50,10 @@ public class Matrix {
 
     // dot product
     fun float[][] dotMat(float x[][], float y[][]) {
-        x.cap() => int rows_x;
-        x[0].cap() => int cols_x;
-        y.cap() => int rows_y; 
-        y[0].cap() => int cols_y; 
+        x.size() => int rows_x;
+        x[0].size() => int cols_x;
+        y.size() => int rows_y;
+        y[0].size() => int cols_y;
 
         float out[cols_y][cols_x];
         float temp[rows_x];
@@ -71,17 +71,17 @@ public class Matrix {
 
     // dot product
     fun float[] dot(float x[], float y[][]) {
-        1 => int rows_x; 
-        x.cap() => int cols_x;
-        y.cap() => int rows_y; 
-        y[0].cap() => int cols_y;
-        
+        1 => int rows_x;
+        x.size() => int cols_x;
+        y.size() => int rows_y;
+        y[0].size() => int cols_y;
+
         float out[cols_y];
 
         if (cols_x == rows_y) {
             for (int i; i < cols_y; i++) {
                 float prod;
-                for (int j; j < rows_y; j++) { 
+                for (int j; j < rows_y; j++) {
                     x[j] * y[j][i] +=> prod;
                 }
                 prod => out[i];
@@ -89,24 +89,24 @@ public class Matrix {
             return out;
         }
         else {
-            <<< "Length of 'x' array must match number of 'y' rows.", "" >>>;
+            <<< "Length of 'x' (", cols_x, ") array must match number of 'y' rows (", rows_y, ").", "" >>>;
             me.exit();
         }
     }
 
     // dot product
     fun float[] dot(float x[][], float y[]) {
-        1 => int rows_x; 
-        x.cap() => int cols_x;
-        x[0].cap() => int rows_y; 
-        y.cap() => int cols_y;
-        
+        1 => int rows_x;
+        x.size() => int cols_x;
+        x[0].size() => int rows_y;
+        y.size() => int cols_y;
+
         float out[cols_y];
 
         if (cols_x == rows_y) {
             for (int i; i < cols_y; i++) {
                 float prod;
-                for (int j; j < rows_y; j++) { 
+                for (int j; j < rows_y; j++) {
                     x[i][j] * y[j] +=> prod;
                 }
                 prod => out[i];
@@ -121,15 +121,15 @@ public class Matrix {
 
     // matrix log e transform
     fun float[][] logMat(float x[][]) {
-        float out[x.cap()][x[0].cap()];
-        float temp[x.cap()];
-        for (int i; i < x[0].cap(); i++) {
-            for (int j; j < x.cap(); j++) {
+        float out[x.size()][x[0].size()];
+        float temp[x.size()];
+        for (int i; i < x[0].size(); i++) {
+            for (int j; j < x.size(); j++) {
                 x[j][i] => temp[j];
             }
             log(temp) @=> float lg[];
-            for (int j; j < x.cap(); j++) {
-                lg[j] => out[j][i];    
+            for (int j; j < x.size(); j++) {
+                lg[j] => out[j][i];
             }
         }
         return out;
@@ -137,7 +137,7 @@ public class Matrix {
 
     // log e transform
     fun float[] log(float x[]) {
-        for (int i; i < x.cap(); i++) {
+        for (int i; i < x.size(); i++) {
             Math.log(x[i] + 1.0) => x[i];
         }
         return x;
@@ -145,31 +145,31 @@ public class Matrix {
 
     // log10 transform
     fun float[] log10(float x[]) {
-        for (int i; i < x.cap(); i++) {
+        for (int i; i < x.size(); i++) {
             Math.log10(x[i] + 1.0) => x[i];
         }
         return x;
     }
-    
+
     // mean average of an array
     fun float mean(float x[]) {
         float sum;
-        for (int i; i < x.cap(); i++) {
+        for (int i; i < x.size(); i++) {
             x[i] +=> sum;
         }
-        return sum/x.cap();
+        return sum/x.size();
     }
 
     // mean average of a matrix by rows or columns
     fun float[] meanMat(float x[][], int axis) {
         int rows, cols;
         if (axis == 0) {
-            x.cap() => rows;
-            x[0].cap() => cols;
+            x.size() => rows;
+            x[0].size() => cols;
         }
         else if (axis == 1) {
-            x[0].cap() => rows;
-            x.cap() => cols;
+            x[0].size() => rows;
+            x.size() => cols;
         }
         float out[cols];
         for (int i; i < cols; i++) {
@@ -190,12 +190,12 @@ public class Matrix {
     // normalize
     fun float[] normalize(float x[]) {
         float max;
-        for (int i; i < x.cap(); i++) {
+        for (int i; i < x.size(); i++) {
             if (x[i] > max) {
                 x[i] => max;
             }
         }
-        for (int i; i < x.cap(); i++) {
+        for (int i; i < x.size(); i++) {
             x[i]/max => x[i];
         }
         return x;
@@ -203,7 +203,7 @@ public class Matrix {
 
     // power function
     fun float[] pow(float x[], float p) {
-        for (int i; i < x.cap(); i++) {
+        for (int i; i < x.size(); i++) {
             Math.pow(x[i], p) => x[i];
         }
         return x;
@@ -211,11 +211,11 @@ public class Matrix {
 
     // sorting function
     fun int[] order (int x[]) {
-        int out[x.cap()];
+        int out[x.size()];
         int sum;
-        while (sum != x.cap() - 1) {
+        while (sum != x.size() - 1) {
             0 => sum;
-            for (int i; i < x.cap() - 1; i++) {
+            for (int i; i < x.size() - 1; i++) {
                 if (x[i] > x[i + 1]) {
                     x[i] => int temp;
                     x[i + 1] => x[i];
@@ -224,14 +224,14 @@ public class Matrix {
                 else {
                     sum++;
                 }
-            } 
+            }
         }
         return x;
     }
 
     // power function
     fun float[] rmstodb(float x[]) {
-        for (int i; i < x.cap(); i++) {
+        for (int i; i < x.size(); i++) {
             Std.rmstodb(x[i]) => x[i];
         }
         return x;
@@ -240,14 +240,14 @@ public class Matrix {
 
     // matrix tranpose
     fun float[][] transpose (float x[][]) {
-        float out[x[0].cap()][x.cap()];
-        for (int i; i < x.cap(); i++) {
-            for (int j; j < x[0].cap(); j++) {
+        float out[x[0].size()][x.size()];
+        for (int i; i < x.size(); i++) {
+            for (int j; j < x[0].size(); j++) {
                 x[i][j] => out[j][i];
             }
         }
         return out;
     }
-    
-    
+
+
 }
