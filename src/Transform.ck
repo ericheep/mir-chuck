@@ -3,6 +3,8 @@
 
 public class Transform {
 
+    float mx[][];
+
     0.0 => float width;
     fun float setWidth(float w) {
         w => width;
@@ -13,7 +15,7 @@ public class Transform {
         32 =>       int numFilters;
         40.0 =>     float minFrq;
         sr/2.0 =>   float maxFrq;
-        return mel(sr, N, numFilters, minFrq, maxFrq);
+        mel(sr, N, numFilters, minFrq, maxFrq);
     }
 
     fun float[][] mel(float sr, int N, int numFilters, float minFrq, float maxFrq) {
@@ -25,14 +27,14 @@ public class Transform {
             mel2hz(minMel + i/(binFrqs.size() - 1.0) * (maxMel - minMel)) => binFrqs[i];
         }
 
-        return compute(sr, N, numFilters, width, binFrqs);
+        coefficents(sr, N, numFilters, width, binFrqs) @=> mx;
     }
 
     fun float[][] bark(float sr, int N) {
         24 =>       int numFilters;
         50.0 =>     float minFrq;
         13500.0 =>  float maxFrq;
-        return bark(sr, N, numFilters, minFrq, maxFrq);
+        bark(sr, N, numFilters, minFrq, maxFrq);
     }
 
     fun float[][] bark(float sr, int N, int numFilters, float minFrq, float maxFrq) {
@@ -44,7 +46,7 @@ public class Transform {
             bark2hz(minBark + i/(binFrqs.size() - 1.0) * (maxBark - minBark)) => binFrqs[i];
         }
 
-        return compute(sr, N, numFilters, width, binFrqs);
+        coefficents(sr, N, numFilters, width, binFrqs) @=> mx;
     }
 
     fun float[][] constantQ(float sr, int N) {
@@ -52,7 +54,7 @@ public class Transform {
         88 * 3 =>   int numFilters;
         27.5 =>     float minFrq;
         4186.01 =>  float maxFrq;
-        return constantQ(sr, N, numFilters, minFrq, maxFrq);
+        constantQ(sr, N, numFilters, minFrq, maxFrq);
     }
 
     fun float[][] constantQ(float sr, int N, int numFilters, float minFrq, float maxFrq) {
@@ -64,7 +66,7 @@ public class Transform {
             pitch2hz(minPitch + i/(binFrqs.size() - 1.0) * (maxPitch - minPitch)) => binFrqs[i];
         }
 
-        return compute(sr, N, numFilters, width, binFrqs);
+        coefficents(sr, N, numFilters, width, binFrqs) @=> mx;
     }
 
     fun float[][] cent(float sr, int N) {
@@ -72,7 +74,7 @@ public class Transform {
         330 =>      int numFilters;
         55.0 =>     float minFrq;
         880.0 =>    float maxFrq;
-        return cent(sr, N, numFilters, minFrq, maxFrq);
+        cent(sr, N, numFilters, minFrq, maxFrq);
     }
 
     fun float[][] cent(float sr, int N, int numFilters, float minFrq, float maxFrq) {
@@ -84,10 +86,10 @@ public class Transform {
             cent2hz(minCent + i/(binFrqs.size() - 1.0) * (maxCent - minCent)) => binFrqs[i];
         }
 
-        return compute(sr, N, numFilters, width, binFrqs);
+        coefficents(sr, N, numFilters, width, binFrqs) @=> mx;
     }
 
-    fun float[][] compute(float sr, int N, int numFilters, float width, float binFrqs[]) {
+    fun float[][] coefficents(float sr, int N, int numFilters, float width, float binFrqs[]) {
         float fftFrqs[N/2 + 1];
 
         // finds center bin frequencies
@@ -121,7 +123,14 @@ public class Transform {
             }
         }
 
+        transpose(w) @=> w;
+        cutMatrix(w, 0, N/2) @=> w;
+
         return w;
+    }
+
+    fun float[] compute(float X[]) {
+        return dot(X, mx);
     }
 
     // maximum value, utility function
@@ -175,6 +184,67 @@ public class Transform {
     private float bark2hz(float bark) {
         return (-19600 * bark - 9996)/(10 * bark - 263);
     }
-}
 
-Transform f;
+    // dot product
+    private float[] dot(float x[], float y[][]) {
+        1 => int rows_x;
+        x.size() => int cols_x;
+        y.size() => int rows_y;
+        y[0].size() => int cols_y;
+
+        float out[cols_y];
+
+        if (cols_x == rows_y) {
+            for (int i; i < cols_y; i++) {
+                float prod;
+                for (int j; j < rows_y; j++) {
+                    x[j] * y[j][i] +=> prod;
+                }
+                prod => out[i];
+            }
+            return out;
+        }
+        else {
+            <<< "Length of 'x' (", cols_x, ") array must match number of 'y' rows (", rows_y, ").", "" >>>;
+            me.exit();
+        }
+    }
+
+    // reduces an array
+    fun float[] cut(float x[], int low, int high) {
+        high - low => int num;
+        float out[num];
+        for (int i; i < num; i++) {
+            x[low + i] => out[i];
+        }
+        return out;
+    }
+
+    // reduces rows of a 2D array
+    private float[][] cutMatrix(float x[][], int low, int high) {
+        high - low => int rows;
+        float out[rows][x[0].size()];
+        float temp[x.size()];
+        for (int i; i < x[0].size(); i++) {
+            for (int j; j < x.size(); j++) {
+                x[j][i] => temp[j];
+            }
+            cut(temp, low, high) @=> float r[];
+            for (int j; j < rows; j++) {
+                r[j] => out[j][i];
+            }
+        }
+        return out;
+    }
+
+    // matrix tranpose
+    fun float[][] transpose (float x[][]) {
+        float out[x[0].size()][x.size()];
+        for (int i; i < x.size(); i++) {
+            for (int j; j < x[0].size(); j++) {
+                x[i][j] => out[j][i];
+            }
+        }
+        return out;
+    }
+}
