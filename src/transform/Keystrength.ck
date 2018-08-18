@@ -1,7 +1,7 @@
-// Tonality.ck
-// Eric Heep
+// Keystrength.ck
 
-public class Tonality {
+
+public class Keystrength {
 
     // keystrength template, (E. Gomez, 2006)
     fun float[][] gomezProfs() {
@@ -12,7 +12,7 @@ public class Tonality {
         file.open("gomezprofs.txt", FileIO.READ);
         for (int i; i < 12; i++) {
             for (int j; j < 12; j++) {
-                file => gomez_profs[i][j]; 
+                file => gomez_profs[i][j];
             }
         }
         return gomez_profs;
