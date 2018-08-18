@@ -1,19 +1,19 @@
-// Subband.ck
-// Eric Heep
+// SubbandCentroids.ck
 
-public class Subband {
 
-    // subband analysis
-    fun float[] bank(float X[], float filts[], int N, float sr) {
+public class SubbandCentroids {
 
-        float subbands[filts.cap() - 1];
+    // subband collection without centroids
+    fun float[] bank(float X[], float filters[], float sr, int N) {
+
+        float subbands[filters.size() - 1];
         N/2 + 1 => int bins;
 
         for (int i; i < bins; i++) {
-            sr/N * i => float frq; 
-            for (int j; j < filts.cap() - 1; j++) {
-                if (filts[j] < frq && filts[j + 1] > frq) {
-                    X[i] +=> subbands[j];        
+            sr/N * i => float frq;
+            for (int j; j < filters.size() - 1; j++) {
+                if (filters[j] < frq && filters[j + 1] > frq) {
+                    X[i] +=> subbands[j];
                 }
             }
         }
@@ -22,33 +22,33 @@ public class Subband {
     }
 
     // subband centroids
-    fun float[] subbandCentroid(float X[], float filts[], int N, float sr) {
-        
-        float prod[filts.cap() - 1];
-        float sum[filts.cap() - 1];
-        float centroid[filts.cap() - 1];
+    fun float[] compute(float X[], float filters[], float sr, int N) {
 
-        X.cap() => int bins;
+        float products[filters.size() - 1];
+        float sums[filters.size() - 1];
+        float centroids[filters.size() - 1];
+
+        X.size() => int bins;
 
         for (int i; i < bins; i++) {
-            sr/N * i => float frq; 
-            for (int j; j < filts.cap() - 1; j++) {
-                if (filts[j] < frq && filts[j + 1] > frq) {
-                    X[i] * frq +=> prod[j];        
-                    X[i] +=> sum[j];
+            sr/N * i => float frq;
+            for (int j; j < filters.size() - 1; j++) {
+                if (filters[j] < frq && filters[j + 1] > frq) {
+                    X[i] * frq +=> products[j];
+                    X[i] +=> sums[j];
                 }
             }
         }
 
-        for (int i; i < filts.cap() - 1; i++) {
-            if (prod[i] != 0 && sum[i] != 0) {
-                prod[i]/sum[i] => centroid[i];
+        for (int i; i < filters.size() - 1; i++) {
+            if (products[i] != 0 && sums[i] != 0) {
+                products[i]/sums[i] => centroids[i];
             }
             else {
-                0 => centroid[i];
+                0 => centroids[i];
             }
         }
 
-        return centroid;
+        return centroids;
     }
 }
