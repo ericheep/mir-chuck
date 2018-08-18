@@ -1,5 +1,5 @@
 // Chromagram.ck
-// Eric Heep
+
 
 public class Chromagram {
 
@@ -15,7 +15,7 @@ public class Chromagram {
         }
         return octave;
     }
-    
+
     // quantizes chromagram data according to q_array coefficients
     fun float[] quantize(float X[]) {
         for (int i; i < X.cap(); i++) {
