@@ -1,8 +1,8 @@
 // SpectralEntropy.ck
-// Eric Heep
 
 
 public class SpectralEntropy {
+
     fun float entropy(float X[]) {
         X.size() => int N;
         float psd[X.size()];

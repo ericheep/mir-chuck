@@ -1,4 +1,3 @@
-// Eric Heep
 // SpectralKurtosis.ck
 
 

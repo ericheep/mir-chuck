@@ -1,54 +1,53 @@
 // SpectralSpread.ck
-// Eric Heep
 
 
 public class SpectralSpread {
 
-    fun float centroid(float X[], float sr, int fft_size) {
+    fun float centroid(float X[], float sr, int N) {
 
         // array for our bin frequencies
-        float fft_frqs[fft_size/2 + 1];
+        float fftFrqs[N/2 + 1];
 
         // finds center bin frequencies
-        for (int i; i < fft_frqs.cap(); i++) {
-            sr/fft_size * i => fft_frqs[i];
+        for (int i; i < fftFrqs.size(); i++) {
+            sr/N * i => fftFrqs[i];
         }
 
         float den;
-        float power[X.cap()];
-        for (int i; i < X.cap(); i++) {
+        float power[X.size()];
+        for (int i; i < X.size(); i++) {
             X[i] * X[i] => power[i];
             power[i] +=> den;
         }
 
         float num;
-        for (int i; i < X.cap(); i++) {
-            fft_frqs[i] * power[i] +=> num;
+        for (int i; i < X.size(); i++) {
+            fftFrqs[i] * power[i] +=> num;
         }
 
         return num/den;
     }
 
-    fun float compute(float X[], float sr, int fft_size) {
+    fun float compute(float X[], float sr, int N) {
 
         // required centroid for spread
-        centroid(X, sr, fft_size) => float cent;
+        centroid(X, sr, N) => float cent;
 
         // array for our bin frequencies
-        float fft_frqs[fft_size/2 + 1];
+        float fftFrqs[N/2 + 1];
 
         // finds center bin frequencies
-        for (int i; i < fft_frqs.cap(); i++) {
-            sr/fft_size * i => fft_frqs[i];
+        for (int i; i < fftFrqs.size(); i++) {
+            sr/N * i => fftFrqs[i];
         }
 
         float num, den;
-        float power[X.cap()];
-        float square[X.cap()];
+        float power[X.size()];
+        float square[X.size()];
 
-        for(int i; i < X.cap(); i++) {
+        for(int i; i < X.size(); i++) {
             X[i] * X[i] => power[i];
-            Math.pow(fft_frqs[i] - cent, 2) => square[i];
+            Math.pow(fftFrqs[i] - cent, 2) => square[i];
             power[i] * square[i] +=> num;
             power[i] +=> den;
         }
