@@ -3,7 +3,8 @@
 
 
 public class SpectralCentroid {
-    fun float centroid(float X[], float sr, int fft_size) {
+
+    fun float compute(float X[], float sr, int fft_size) {
 
         // array for our bin frequencies
         float fft_frqs[fft_size/2 + 1];
@@ -13,14 +14,14 @@ public class SpectralCentroid {
             sr/fft_size * i => fft_frqs[i];
         }
 
-        float den;
+        0.0 => float den;
         float power[X.cap()];
         for (int i; i < X.cap(); i++) {
             X[i] * X[i] => power[i];
             power[i] +=> den;
         }
 
-        float num;
+        0.0 => float num;
         for (int i; i < X.cap(); i++) {
             fft_frqs[i] * power[i] +=> num;
         }

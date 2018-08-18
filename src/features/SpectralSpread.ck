@@ -29,7 +29,7 @@ public class SpectralSpread {
         return num/den;
     }
 
-    fun float spread(float X[], float sr, int fft_size) {
+    fun float compute(float X[], float sr, int fft_size) {
 
         // required centroid for spread
         centroid(X, sr, fft_size) => float cent;

@@ -16,7 +16,7 @@ public class SpectralKurtosis {
         return numerator / denominator;
     }
 
-    fun float kurtosis(float X[]) {
+    fun float compute(float X[]) {
         mu(1, X) => float mu1;
         mu(2, X) => float mu2;
         mu(3, X) => float mu3;

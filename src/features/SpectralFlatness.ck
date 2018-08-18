@@ -3,7 +3,8 @@
 
 
 public class SpectralFlatness {
-    fun float flatness(float X[]) {
+
+    fun float compute(float X[]) {
         X.size() => int N;
         float normalizedX[N];
 
