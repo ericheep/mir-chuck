@@ -1,12 +1,12 @@
 // KNN.ck
-
-
 // this is primarily based on a short tutorial for a basic KNN,
 // https://machinelearningmastery.com/tutorial-to-implement-k-nearest-neighbors-in-python-from-scratch/
+
+
 public class KNN {
 
-	float trainingData[][];
-	int trainingLabels[];
+	float trainingData[0][0];
+	int trainingLabels[0];
 
 	// standard distance metric
 	private float euclideanDistance (float x[], float y[]) {
@@ -96,7 +96,7 @@ public class KNN {
 		return neighborLabels;
 	}
 
-	public void train (float data[], int label) {
+	fun void train (float data[], int label) {
 		trainingData << data;
 		trainingLabels << label;
 	}

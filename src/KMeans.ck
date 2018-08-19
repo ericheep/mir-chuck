@@ -128,17 +128,17 @@ public class KMeans {
     fun float[][] train(float x[][]) {
 
         // features
-        x[0].size() => int num_features;
+        x[0].size() => int numFeatures;
 
         // centroids
-        float c[k][num_features];
+        float c[k][numFeatures];
 
         // indices
-        int indices[num_features];
+        int indices[numFeatures];
 
         // centroid assignment
         for (0 => int i; i < k; i++) {
-            for (int j; j < num_features; j++) {
+            for (int j; j < numFeatures; j++) {
                 x[i][j] => c[i][j];
             }
         }
@@ -179,7 +179,7 @@ public class KMeans {
 KMeans km;
 
 // data
-//float x[num_instances][num_features];
+//float x[num_instances][numFeatures];
 [[1.0, 3.0, 1.0, 4.0, 2.0], [1.2, 3.1, 1.3, 4.1, 2.0], [1.3, 3.5, 1.2, 4.5, 2.1],
  [4.0, 2.1, 4.4, 1.1, 0.1], [3.9, 2.0, 4.3, 1.0, 0.0], [4.1, 1.9, 5.9, 1.2, 0.5],
  [1.0, 3.0, 1.0, 4.0, 2.0], [1.2, 3.1, 1.3, 4.1, 2.0], [1.3, 3.5, 1.2, 4.5, 2.1],
