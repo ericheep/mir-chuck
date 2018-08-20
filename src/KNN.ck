@@ -7,6 +7,17 @@ public class KNN {
 
 	float trainingData[0][0];
 	int trainingLabels[0];
+    int K, L;
+
+    public void numNeighbors(int k) {
+        k => K;
+    }
+    numNeighbors(15);
+
+    public void numLabels(int l) {
+        l => L;
+    }
+    numLabels(2);
 
 	// standard distance metric
 	private float euclideanDistance (float x[], float y[]) {
@@ -96,17 +107,21 @@ public class KNN {
 		return neighborLabels;
 	}
 
-	fun void train (float data[], int label) {
+	public void addFeatures(float data[], int label) {
 		trainingData << data;
 		trainingLabels << label;
 	}
 
+    public void clear() {
+        trainingData.clear();
+    }
+
     // returns highest vote
-	public int predict (float testInstance[], int numLabels, int K) {
+	public int predict(float testInstance[]) {
 		if (trainingData.size() > K) {
 			getNeighbors(trainingData, testInstance, K) @=> int neighbors[];
 			getNeighborLabels(neighbors, trainingLabels) @=> int neighborLabels[];
-			getHighestVote(neighborLabels, numLabels) => int vote;
+			getHighestVote(neighborLabels, L) => int vote;
 			return vote;
 		} else {
 			return -1;
@@ -114,7 +129,7 @@ public class KNN {
 	}
 
     // returns neighbor ratio
-	public float score(float testInstance[], int numLabels, int K) {
+	public float score(float testInstance[], int numLabels) {
 		if (trainingData.size() > K) {
 			getNeighbors(trainingData, testInstance, K) @=> int neighbors[];
 			getNeighborLabels(neighbors, trainingLabels) @=> int neighborLabels[];
