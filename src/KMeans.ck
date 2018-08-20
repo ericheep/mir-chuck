@@ -118,8 +118,12 @@ public class KMeans {
 
     // returns an array of predicted scores
     fun int predict(float x[]) {
-        euclideanDistance(x, model) @=> float d[];
-        return argMin(d);
+        if (model.size() > 0) {
+            euclideanDistance(x, model) @=> float d[];
+            return argMin(d);
+        } else {
+            return -1;
+        }
     }
 
     fun void addFeatures(float data[]) {
@@ -128,7 +132,11 @@ public class KMeans {
         data @=> trainingData[N];
     }
 
-    fun float trainModel() {
+    fun void clearModel() {
+        model.clear();
+    }
+
+    fun float computeModel() {
         trainingData[0].size() => int numFeatures;
 
         // centroids
