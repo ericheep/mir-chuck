@@ -39,10 +39,7 @@ while (true) {
         "Centroid: ", cent,
         "Spread: ", spr,
         "Kurtosis: ", kurt,
-        "Skewness: ", skew
-    >>>;
-
-    <<<
+        "Skewness: ", skew,
         "SubbandCentroids: ", subCents[0], subCents[1], subCents[2]
     >>>;
 }
