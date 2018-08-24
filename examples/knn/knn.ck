@@ -98,7 +98,7 @@ fun void train() {
         } else if (isTrainActiveB) {
             knn.addFeatures(features(X), 1);
         } else {
-            knn.predict(features(X)) => int score;
+            knn.predict(features(X), true) => int score;
             if (score >= 0) {
                 <<< "Score:", score >>>;
             }

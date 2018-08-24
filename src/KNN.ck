@@ -59,17 +59,22 @@ public class KNN {
 	}
 
 	// returns a sorted list of the closest neighbors
-	private int[] getNeighbors(float trainingSet[][], float testInstance[], int K) {
+	private float[] getDistances(float trainingSet[][], float testInstance[], int K) {
 		trainingSet.size() => int N;
 		float distances[N];
-		int neighbors[K];
 
 		// collect distances from instance and trained data
 		for (0 => int i; i < N; i++) {
 			euclideanDistance(trainingSet[i], testInstance) => distances[i];
 		}
 
-		// get indices of closest rows (neighbors)
+        return distances;
+    }
+
+    private int[] getNeighbors(float distances[], int K) {
+		int neighbors[K];
+
+        // get indices of closest rows (neighbors)
 		argSort(distances) @=> int arguments[];
 
 		// reduce list, I wish there was a .Slice method for this
@@ -78,7 +83,7 @@ public class KNN {
 		}
 
 		return neighbors;
-	}
+    }
 
 	private int getHighestVote(int neighbors[], int numLabels) {
 		int votes[numLabels];
@@ -87,14 +92,59 @@ public class KNN {
 			votes[neighbors[i]]++;
 		}
 
-		0 => int max;
+		0 => int highestVote;
 		for (0 => int i; i < numLabels; i++) {
-			if (votes[i] > votes[max]) {
-				i => max;
+			if (votes[i] > votes[highestVote]) {
+				i => highestVote;
 			}
 		}
 
-		return max;
+		return highestVote;
+	}
+
+    private void normalize(float x[]) {
+        // normalize distances
+        x[0] => float min;
+        x[0] => float max;
+
+        for (0 => int i; i < x.size(); i++) {
+            if (x[i] > max) {
+                x[i] => max;
+            }
+            if (x[i] < min) {
+                x[i] => min;
+            }
+        }
+
+        for (0 => int i; i < x.size(); i++) {
+            (x[i] - min)/max => x[i];
+        }
+    }
+
+    private void invert(float x[]) {
+        for (0 => int i; i < x.size(); i++) {
+            1.0 - x[i] => x[i];
+        }
+    }
+
+    private int getHighestWeightedVote(int neighbors[], int neighborLabels[], float distances[], int numLabels) {
+		float weightedVotes[numLabels];
+
+        normalize(distances);
+        invert(distances);
+
+		for (0 => int i; i < neighborLabels.size(); i++) {
+			distances[neighbors[i]] +=> weightedVotes[neighborLabels[i]];
+		}
+
+		0 => int highestVote;
+		for (0 => int i; i < numLabels; i++) {
+			if (weightedVotes[i] > weightedVotes[highestVote]) {
+				i => highestVote;
+			}
+		}
+
+		return highestVote;
 	}
 
 	private int[] getNeighborLabels(int neighbors[], int trainingLabels[]) {
@@ -117,12 +167,17 @@ public class KNN {
     }
 
     // returns highest vote
-	public int predict(float testInstance[]) {
+	public int predict(float testInstance[], int distanceWeights) {
 		if (trainingData.size() > K) {
-			getNeighbors(trainingData, testInstance, K) @=> int neighbors[];
+			getDistances(trainingData, testInstance, K) @=> float distances[];
+			getNeighbors(distances, K) @=> int neighbors[];
 			getNeighborLabels(neighbors, trainingLabels) @=> int neighborLabels[];
-			getHighestVote(neighborLabels, L) => int vote;
-			return vote;
+
+            if (distanceWeights) {
+                return getHighestWeightedVote(neighbors, neighborLabels, distances, L);
+            } else {
+                return getHighestVote(neighborLabels, L);
+            }
 		} else {
 			return -1;
 		}
@@ -131,7 +186,8 @@ public class KNN {
     // returns neighbor ratio
 	public float score(float testInstance[], int numLabels) {
 		if (trainingData.size() > K) {
-			getNeighbors(trainingData, testInstance, K) @=> int neighbors[];
+			getDistances(trainingData, testInstance, K) @=> float distances[];
+			getNeighbors(distances, K) @=> int neighbors[];
 			getNeighborLabels(neighbors, trainingLabels) @=> int neighborLabels[];
 
 			0 => int sum;
