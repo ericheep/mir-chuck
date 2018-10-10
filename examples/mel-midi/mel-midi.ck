@@ -12,6 +12,8 @@ second / samp => float sr;
 Windowing.hamming(N) => fft.window;
 
 UAnaBlob blob;
+MidiOut out;
+MidiMsg msg;
 
 // set mel coefficients
 transform.mel(sr, N);
@@ -27,5 +29,27 @@ while (true) {
     // mel bands
     transform.compute(X) @=> float melArray[];
 
-   // <<< melArray[0], melArray[1] >>>;
+    normalize(melArray);
+    midiSendArray(melArray);
+}
+
+fun void normalize(float arr[]) {
+    0.0 => float max;
+    arr[0] => float min;
+    for (0 => int i; i < arr.size(); i++) {
+        if (arr[i] > max) {
+            arr[i] => max;
+        }
+        if (arr[i] < min) {
+            arr[i] => min;
+        }
+    }
+
+    for (0 => int i; i < arr.size(); i++) {
+        (arr[i] - min)/max => arr[i];
+    }
+}
+
+fun void midiSendArray(float midiArray[]) {
+
 }
