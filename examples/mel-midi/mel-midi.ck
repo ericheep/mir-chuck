@@ -15,6 +15,9 @@ UAnaBlob blob;
 MidiOut out;
 MidiMsg msg;
 
+// set midi parameters, can input string here
+out.open(0);
+
 // set mel coefficients
 transform.mel(sr, N);
 
@@ -33,6 +36,7 @@ while (true) {
     midiSendArray(melArray);
 }
 
+// subtract min and divide by max
 fun void normalize(float arr[]) {
     0.0 => float max;
     arr[0] => float min;
@@ -50,6 +54,16 @@ fun void normalize(float arr[]) {
     }
 }
 
-fun void midiSendArray(float midiArray[]) {
+fun int floatToMidiValue(float f) {
+    return (f * 255) $ int;
+}
 
+// basic sender
+fun void midiSendArray(float midiArray[]) {
+    for (0 => int i; i < midiArray.size(); i++) {
+        floatToMidiValue(midiArray[i]) => msg.data1;
+        60 => msg.data2;
+        127 => msg.data3;
+        out.send(msg);
+    }
 }
