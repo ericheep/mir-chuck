@@ -58,12 +58,12 @@ fun int floatToMidiValue(float f) {
     return (f * 255) $ int;
 }
 
-// basic sender
+// basic sender, sending out MIDI CC messages
 fun void midiSendArray(float midiArray[]) {
     for (0 => int i; i < midiArray.size(); i++) {
-        floatToMidiValue(midiArray[i]) => msg.data1;
-        60 => msg.data2;
-        127 => msg.data3;
+        120 => msg.data1;
+        i => msg.data2;
+        floatToMidiValue(midiArray[i]) => msg.data3;
         out.send(msg);
     }
 }
